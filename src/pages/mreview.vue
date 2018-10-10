@@ -33,7 +33,7 @@
 <script>
     import "../assets/js/jquery.min.js";
     import "../assets/js/bootstrap.min.js";
-    import "../assets/js/vue.js";
+    // import "../assets/js/vue.js";
     export default {
         data(){
             return {
