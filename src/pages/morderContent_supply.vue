@@ -67,7 +67,7 @@
                     <caption class="table_title">会议布展情况</caption>
                     <tr style="border-top: none;">
                         <td class="table_name">展台</td>
-                        <td><input class="mindex_input" type="number" name="" v-model="ocshowplatform"></td>
+                        <td><input class="mindex_input" type="number" name="" v-model="ocshowplatform"></td>   
                     </tr>
                     <tr>
                         <td class="table_name">展架</td>
@@ -116,7 +116,7 @@
         <div class="kong"></div>
         <div class="button_btn">
                 <button class="mindex_tab submit" @click="submit">评价</button>
-            <button class="mindex_tab cancle" @click="back">返回</button>
+            <button class="mindex_tab cancle" @click="back">取消</button>
         </div>
     </div>
     
@@ -133,7 +133,7 @@
     import "../assets/js/bootstrap.min.js";
     import "../assets/js/bootstrap-datetimepicker.min.js";
     import "../assets/js/bootstrap-datetimepicker.zh-CN.js";
-    import "../assets/js/moment-with-locales.js";
+    // import "../assets/js/moment-with-locales.js";
     import "../assets/js/Global.js";
     
     export default{

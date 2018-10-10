@@ -89,8 +89,8 @@
         <div class="kong"></div>
         <div class="button_btn">
             <!-- <button class="mindex_tab submit">编辑</button> -->
-            <button class="mindex_tab review" @click="goComment">评价</button>
-            <button class="mindex_tab cancle" data-toggle="modal" data-target="#mySearch">取消</button>
+            <button @click="goComment"  v-bind:class="{'submit':yesc,'submitChange':noc}">评价</button>
+            <button data-toggle="modal" data-target="#mySearch" v-bind:class="{'mindex_tab cancle':yesB,'submitChange':noB}">取消</button>
         </div>
 
         <!-- 取消预定弹窗 -->
@@ -128,7 +128,7 @@
     import "../assets/js/bootstrap.min.js";
     import "../assets/js/bootstrap-datetimepicker.min.js";
     import "../assets/js/bootstrap-datetimepicker.zh-CN.js";
-    import "../assets/js/moment-with-locales.js";
+    // import "../assets/js/moment-with-locales.js";
     import "../assets/js/Global.js";
 
     export default{
@@ -147,7 +147,12 @@
                 dataArry:[],//data总数数据
                 ag:[],//增值物品数组 dataArry分支
                 bg:[],//基础物品数组 dataArry分支
-                cancleContent:''//取消原因内容
+                cancleContent:'',//取消原因内容
+                /*按钮状态*/
+                yesB:true,
+                noB:false,
+                yesc:false,
+                noc:false
             }
         },
         mounted(){
@@ -186,7 +191,11 @@
                     /*基础物品信息列表*/
                     self.bg = self.dataArry[1]
                     /*查看是否订单是已取消状态*/
-
+                    let state = self.dataArry[6]
+                    if(state == 0){
+                        self.noB = true
+                        self.yesB = false
+                    }
                 })
             },
             goComment(){
@@ -203,7 +212,6 @@
                 }
             },
             goCancle(){
-
                 let self = this
                 let postData = {
                     ocid:self.ocid,

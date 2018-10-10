@@ -69,13 +69,20 @@ body{
 }
 
 .submit{
-	background: #fff;
+	background: #2EC5C4;
 	color: #000;
 }
 
 .cancle{
 	background: #fff; 
 	color: #000;
+}
+
+/*动态按钮样式*/
+.submitChange{
+	background:#ddd;
+	color: #000;
+	pointer-events: none;
 }
 
 .review{
