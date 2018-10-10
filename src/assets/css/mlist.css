@@ -1,0 +1,29 @@
+.mlist_tab{
+	display: flex;
+	background-color: #fff;
+	padding: 0 20px;
+}
+
+.mlist_tab li{
+	width: 100%;
+	text-align: center;
+	font-size: 1.3em;
+	padding: 15px 0;
+	box-sizing: border-box;
+	border-bottom: 3px solid transparent;
+}
+.mlist_tab_act{
+	border-bottom-color: #2EC5C4 !important;
+}
+
+.mindex_item{
+	display: block;
+}
+
+.mindex_list{
+	min-height: calc(100% - 120px);
+}
+
+.mindex_item_fr{
+	color: #2EC5C4;
+}

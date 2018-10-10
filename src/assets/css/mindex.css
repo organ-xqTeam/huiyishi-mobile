@@ -1,0 +1,196 @@
+body{
+	min-width: 320px;
+	color: #000;
+	background: #f1f5f6;
+}
+
+.mindex_top{
+	padding: 10px;
+	background-color: #fff;
+}
+
+.mindex_title{
+	font-size: 1.5em;
+}
+
+.icon-shaixuan{
+	font-size: 1.5em;
+	position: absolute;
+	right: 15px;
+    top: 8px;
+}
+
+/*筛选弹窗*/
+.mindex_jump{
+	margin: 0;
+	width: 65%;
+	height: 100%;
+	background-color: #fff;
+	position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/*下方按钮*/
+.kong{
+	height: 55px;
+}
+.button_btn{
+	background-color: #fff;
+	display: flex;
+	justify-content: space-around;
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	border-top: 1px solid #ddd;
+}
+
+.add_info{
+	width: 88%;
+	height: 50px;
+	margin: 10px 6%;
+	box-sizing: border-box;
+	border: none;
+	outline: none;
+	background-color: #fff;
+	font-size: 1.3em;
+	border-radius: 6px;
+	border: 1px solid #D8D8D8;
+}
+
+.button_btn button,.button_btn a{
+	width: 100%;
+	outline: none;
+	border: none;
+	font-size: 18px;
+	height: 50px;
+	text-align: center;
+}
+
+.submit{
+	background: #fff;
+	color: #000;
+}
+
+.cancle{
+	background: #fff; 
+	color: #000;
+}
+
+.review{
+	background-color: #2EC5C4;
+	color: #000;
+}
+
+.mindex_jump_title{
+	font-size: 1.3em;
+	margin: 10px 0;
+}
+
+.mindex_jump_input{
+	width: 100%;
+	margin-bottom: 20px;
+	font-size: 1em;
+	padding: 8px;
+	border: 1px solid #D8D8D8;
+	border-radius: 4px;
+	outline: none;
+}
+
+/*上方日历筛选*/
+.mindex_date_ul{
+	display: flex;
+	justify-content: space-between;
+	margin-top: 10px;
+}
+
+.mindex_date_ul li{
+	display: inline-block;
+	text-align: center;
+}
+
+.mindex_date_week{
+	font-size: 1em;
+	color: #848484;
+	margin-bottom: 4px;
+}
+
+.mindex_date_rili{
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 1.3em;
+	border-radius: 50%;
+}
+
+.mindex_date_act .mindex_date_rili{
+	background-color: #2EC5C4;
+	color: #fff;
+}
+
+.mindex_date_act .mindex_date_week{
+	color: #2EC5C4
+}
+
+/*主要列表*/
+.mindex_list{
+	margin-top: 10px;
+	background-color: #fff;
+	min-height: calc(100% - 139px);
+    position: absolute;
+    width: 100%;
+}
+
+.mindex_item{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px 20px;
+	border-bottom: 1px solid #D8D8D8;
+}
+
+.mindex_item_name{
+	font-size: 1.3em;
+	color: #000;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+
+.mindex_item_info{
+	font-size: 1em;
+	color: #7B7B7B;
+}
+
+.mindex_item_r span{
+	font-size: 1.6em;
+	color: #929292;
+}
+
+.mindex_tab i{
+	font-size: 1.5em;
+}
+
+/*渐变字体颜色*/
+.mycolor{
+	background: linear-gradient(to right, #4ECD9E, #34B6CD);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+/*输入框弹窗*/
+.rej_title{
+	font-size: 18px;
+}
+.rej_textarea{
+	width: 100%;
+	height: 100px;
+	outline: none;
+	border: none;
+	resize: none;
+}
+.rej_button{
+	width: 100%;
+	height: 40px;
+	font-size: 18px;
+}

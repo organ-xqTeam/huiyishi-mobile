@@ -1,0 +1,139 @@
+<template>
+  <div class="mlogin-page">
+    <div class="mlogin_title ac">登录会议室预定</div>
+    <div class="mlogin_input ac">
+      <span class="iconfont icon-iconzh"></span>
+      <input class="" type="text" name="" v-model="name" placeholder="账号">
+    </div>
+    <div class="mlogin_input ac">
+      <span class="iconfont icon-mima"></span>
+      <input class="" type="password" name="" v-model="password" placeholder="请输入密码">
+    </div>
+    <div class="mlogin_btn ac">
+      <button @click="login">登录</button>
+    </div>
+    <div class="mlogin_forget ar">
+      <a href="mforget.html" style="color: #aaa;">忘记密码?</a>
+    </div>
+  </div>
+</template>
+
+<script>
+import "../assets/css/reset.css";
+import "../assets/css/iconfont.css";
+
+export default {
+  name: "mlogin",
+  data() {
+    return {
+      name:"",
+      password:"",
+    }
+  },
+  mounted() {
+  },
+  methods:{
+    login(){
+      let self=this
+      //获取用户名密码
+			let name = this.name.trim()
+			let password = this.password.trim()
+			if (name == "" || password == "") {
+				alert("登录信息请填写完整")
+				return
+			}
+			let postData = {
+				interfaceNum: "1", //暂时默认
+				userNames: name,
+				password: password,
+			}
+      let url=`${Global.host}/user/login?interfaceNum=${postData.interfaceNum}&userNames=${postData.userNames}&password=${postData.password}`
+      console.log(postData)
+      console.log(url)
+      Global.openLoading()
+
+// this.axios(`/user/login?interfaceNum=${postData.interfaceNum}&userNames=${postData.userNames}&password=${postData.password}`, {
+//     method: 'GET',
+//     mode: 'no-cors',
+//     // headers: {
+//     //   'Access-Control-Allow-Origin': 'https://localhost:8089/',
+
+//     //   'Content-Type': 'application/json',
+//     // },
+//   // withCredentials: true,
+//     credentials: 'same-origin',
+//   })
+//   .then(response => {
+//   })
+
+      this.axios.get(`/user/login?interfaceNum=${postData.interfaceNum}&userNames=${postData.userNames}&password=${postData.password}`)
+      .then(function (response) {
+        console.log(response);
+        let state=Number(response.data)
+
+        self.getMyInfo(function(){
+          //1.普通用户 2.主管部门 3.服务部门 4.没有权限的 5.管理员 6.用户不存在
+          Global.closeLoading()
+          if(state==6){
+            alert("用户不存在")
+          }else{
+            //保存用户信息
+            localStorage.setItem("userRight", state)
+            //跳转页面
+            let url = ""
+            switch (state) {
+              case 1:
+                url = "../member/index.html"
+                break
+              case 2:
+                url = "../approval/approval.html"
+                break
+              case 3:
+                url = "../service/service.html"
+                break
+              case 4:
+                // alert("该用户没有权限")
+                url = "../member/index.html"
+                break
+              case 5:
+                //管理员页面？
+                break
+              default:
+                break
+            }
+            // url="/mindex/mindexBook/mindexBasic"
+            self.$router.push({
+                path:"/mindex"
+            })
+          }
+        })
+      })
+      .catch(function (error) {
+        Global.closeLoading()
+        console.log(error);
+      });
+    },
+    //获取我的信息 把用户信息保存到localstorage
+		getMyInfo(callback){
+      let url="/user/outPutSession"
+      this.axios.get(url)
+      .then(function(res){
+          console.log(res)
+					//保存自己的用户信息到localstorage
+					var mUserInfo=res.data
+					localStorage.setItem("mUserInfo",JSON.stringify(mUserInfo))
+
+					callback()
+      })
+      .catch(function(res){
+        console.log(res)
+      })
+		},
+  } //methods end
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+@import "../assets/css/mlogin.css";
+</style>
