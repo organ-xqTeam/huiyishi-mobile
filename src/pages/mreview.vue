@@ -84,7 +84,7 @@
                 //console.log(this.starArr)
             },
             sendSubmit(){
-
+                console.log(this.rid)
                 let check = this.checkRe()
                 if(check == 0){
                     return;

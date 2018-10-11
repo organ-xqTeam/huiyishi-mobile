@@ -115,8 +115,8 @@
         <!--提交按钮-->
         <div class="kong"></div>
         <div class="button_btn">
-                <button class="mindex_tab submit" @click="submit">评价</button>
-            <button class="mindex_tab cancle" @click="back">取消</button>
+            <button @click="submit"  v-bind:class="{'submit':yesc,'submitChange':noc}">评价</button>
+            <button data-toggle="modal" data-target="#mySearch" v-bind:class="{'mindex_tab cancle':yesB,'submitChange':noB}">取消</button>
         </div>
     </div>
     
@@ -155,6 +155,11 @@
                 cname:'',
                 ocremark:'',
                 rid:0,
+                /*按钮状态*/
+                yesB:true,
+                noB:false,
+                yesc:true,
+                noc:false
             }
         },
         mounted(){
@@ -187,10 +192,20 @@
                     self.rid = self.dataArry[0].rid
                     self.isDockingState=self.dataArry[0].ocdockingstate
                     self.isOcplatform=self.dataArry[0].ocplatform
+                    let state = self.dataArry[6]
+                    if(state == 0){
+                        self.noB = true
+                        self.yesB = false
+                    }
+                    if(self.dataArry[3] != null){
+                        self.yesc = false,
+                        self.noc = true
+                    }
                 })
             },
             submit(){
-                if(this.dataArry[3].lenght == 0){
+                console.log(this.rid)
+                if(this.dataArry[3] == null){
                     this.$router.push({
                         path:"/mreview",
                         query:{

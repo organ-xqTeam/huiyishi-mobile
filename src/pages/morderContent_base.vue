@@ -136,6 +136,7 @@
         data(){
             return{
                 ocid:0,
+                rid:0,
                 ocsourcename:'',
                 rname:'',
                 ocnum:0,
@@ -151,7 +152,7 @@
                 /*按钮状态*/
                 yesB:true,
                 noB:false,
-                yesc:false,
+                yesc:true,
                 noc:false
             }
         },
@@ -196,10 +197,15 @@
                         self.noB = true
                         self.yesB = false
                     }
+                    if(self.dataArry[3] != null){
+                        self.yesc = false,
+                        self.noc = true
+                    }
+                    self.rid = self.dataArry[0].rid
                 })
             },
             goComment(){
-                if(this.dataArry[3].lenght == 0){
+                if(this.dataArry[3] == null){
                     this.$router.push({
                         path:"/mreview",
                         query:{
