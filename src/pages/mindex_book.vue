@@ -55,13 +55,13 @@ export default {
     return {
       rinfo:{}, //这个会议室的信息
 
-      selectedDate:{}, //传来的选择的日期
+      selectedDate:{}, //上一个页面传来的选择的日期，后面好像没用了
 
       selectedDateIndex:0, //当前选择的日期index
       //表头
       year:"",
       month:"",
-      dateArr:[],
+      dateArr:[], //日期数组
 
       items:[
 					{ message: '07:00~07:30',isAlready:false },
@@ -100,8 +100,9 @@ export default {
     }
   },
   watch:{
-    selectedDateIndex(){
-      // this.get
+    selectedDateIndex(){ //日期切换的时候查数据
+      this.getBookTime()
+      this.selectedTimeIndex=[]
     },
   },
   mounted() {
@@ -174,12 +175,20 @@ export default {
         dateAssign:this.dateArr[this.selectedDateIndex].dateStr
       }
       console.log(postData)
+      Global.openLoading()
       this.axios.post('/user/showRoomByAssignDay',this.qs.stringify(postData))
       .then(function(res){
+        Global.closeLoading()
         console.log(res)
         let arr=res.data
         console.log(arr)
         if(arr.length>0){
+          //绘制
+          //清空
+          self.items.forEach(function(obj){
+            obj.isAlready=false
+          })
+          //清空end
           arr.forEach(function(obj){
             let bgtime=Global.dateToFormat(new Date(obj.ocbegintime))
             let edtime=Global.dateToFormat(new Date(obj.ocendtime))
@@ -192,6 +201,7 @@ export default {
         // self.drawOneTime("10:00","11:30")
       })
       .catch(function(res){
+        Global.closeLoading()
         console.log(res)
       })
     },
@@ -266,7 +276,7 @@ export default {
       .then(function(res){
         Global.closeLoading()
         console.log(res)
-        self.modalInfo=res.data
+        self.modalInfo=res.data[0]
         $("#myCheck").modal("show")
       })
       .catch(function(res){

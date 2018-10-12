@@ -85,7 +85,7 @@
     <!--提交按钮-->
     <div class="kong"></div>
     <div class="button_btn">
-      <button class="mindex_tab submit" id="allSubmit" style="color:#fff;" @click="submit">提交</button>
+      <button class="mindex_tab submit" id="allSubmit" @click="submit">提交</button>
       <button class="mindex_tab cancle" @click="routerGoback">取消</button>
     </div>
 
@@ -254,7 +254,7 @@
       </div>
       <!--按钮-->
       <div class="button_btn">
-        <button class="submit" style="color:#fff;" @click="confirmBasicGood">提交</button>
+        <button class="submit" @click="confirmBasicGood">提交</button>
         <button class="cancle" @click="cancelBasicGood">取消</button>
       </div>
     </div>
@@ -295,7 +295,7 @@
       </div>
       <!--按钮-->
       <div class="button_btn">
-        <button class="submit" style="color:#fff;" @click="confirmAddedGood">提交</button>
+        <button class="submit" @click="confirmAddedGood">提交</button>
         <button class="cancle" @click="cancelAddedGood">取消</button>
       </div>
     </div>
@@ -426,7 +426,7 @@
         this.name = data.rinfo.rname
         //会议时间
         //日期
-        let date = data.selectedDate.dateStr
+        let date = data.dateArr[data.selectedDateIndex].dateStr
         //时间
         let selectedTimeArr = data.items.filter(function (obj, index) {
           return data.selectedTimeIndex.indexOf(index) > -1
