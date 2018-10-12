@@ -69,24 +69,17 @@ body{
 }
 
 .submit{
-	background: #2EC5C4;
+	background: #fff;
 	color: #000;
 }
 
 .cancle{
-	background: #fff; 
-	color: #000;
-}
-
-/*动态按钮样式*/
-.submitChange{
-	background:#ddd;
-	color: #000;
-	pointer-events: none;
+	background: #2EC5C4;
+	color: #fff;
 }
 
 .review{
-	background-color: #2EC5C4;
+	background-color: #D3D4D6;
 	color: #000;
 }
 
@@ -153,20 +146,42 @@ body{
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 15px 20px;
+	padding: 10px 15px;
 	border-bottom: 1px solid #D8D8D8;
 }
 
 .mindex_item_name{
 	font-size: 1.3em;
 	color: #000;
-	margin-bottom: 8px;
 	font-weight: bold;
+}
+
+.mindex_item_type{
+	color: #000;
+	margin-bottom: 3px;
+	font-size: 1em;
 }
 
 .mindex_item_info{
 	font-size: 1em;
 	color: #7B7B7B;
+}
+
+.mindex_item_l{
+	display: flex;
+  align-items: center;
+  /* tongzhou */
+  flex: 1 0 0;
+}
+
+.mindex_item_img{
+	width: 35%;
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.mindex_item_img img{
+	width: 100%;
 }
 
 .mindex_item_r span{
