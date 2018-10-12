@@ -67,7 +67,7 @@
                     <caption class="table_title">会议布展情况</caption>
                     <tr style="border-top: none;">
                         <td class="table_name">展台</td>
-                        <td><input class="mindex_input" type="number" name="" v-model="ocshowplatform"></td>   
+                        <td><input class="mindex_input" type="number" name="" v-model="ocshowplatform"></td>
                     </tr>
                     <tr>
                         <td class="table_name">展架</td>
@@ -111,15 +111,58 @@
                 </table>
             </div>
         </div>
-        
+       <!-- 取消预定弹窗 -->
+        <div class="modal fade" id="mySearch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="margin-top: 50px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="rej_title modal-title" id="myModalLabel">取消原因</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <textarea class="rej_textarea" v-model="cancleContent"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="rej_button btn cancle" @click="goCancle">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 拒绝原因弹窗 -->
+        <div class="modal fade" id="repulse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="margin-top: 50px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="rej_title modal-title" id="myModalLabel">拒绝原因</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <textarea class="rej_textarea" v-model="repulseContent"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="rej_button btn cancle" @click="goRepulse">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!--提交按钮-->
         <div class="kong"></div>
         <div class="button_btn">
-            <button @click="submit"  v-bind:class="{'submit':yesc,'submitChange':noc}">评价</button>
-            <button data-toggle="modal" data-target="#mySearch" v-bind:class="{'mindex_tab cancle':yesB,'submitChange':noB}">取消</button>
+            <!-- <button class="mindex_tab submit">编辑</button> -->
+            <button @click="leftButton"  v-bind:class="{'submit':yesc,'submitChange':noc}">{{leftButtonText}}</button>
+            <button @click="rightButton" v-bind:class="{'mindex_tab cancle':yesB,'submitChange':noB}">{{rightButtonText}}</button>
         </div>
     </div>
-    
+
 </template>
 <style scoped>
     @import "../assets/css/bootstrap.min.css";
@@ -135,7 +178,7 @@
     import "../assets/js/bootstrap-datetimepicker.zh-CN.js";
     // import "../assets/js/moment-with-locales.js";
     import "../assets/js/Global.js";
-    
+
     export default{
         data(){
             return{
@@ -159,7 +202,13 @@
                 yesB:true,
                 noB:false,
                 yesc:true,
-                noc:false
+                noc:false,
+                leftButtonText:'',//左侧按钮显示文字
+                rightButtonText:'',//右侧按钮显示文字
+                right:0,//权限
+                opassstate:3,//假设为3，该值是有上一个页面传来***********
+                repulseContent:'',//拒绝原因
+                cancleContent:'',//取消原因内容
             }
         },
         mounted(){
@@ -192,19 +241,84 @@
                     self.rid = self.dataArry[0].rid
                     self.isDockingState=self.dataArry[0].ocdockingstate
                     self.isOcplatform=self.dataArry[0].ocplatform
+                     /*用户权限控制*/
+                    let session = localStorage.getItem("mUserInfo")
+                    let mySession = JSON.parse(session)
+                    let right = JSON.parse( localStorage.getItem("userRight"))
+                    right = 1//测试临时数据
+                    self.right = right
+                    /*更改按钮点击状态*/
                     let state = self.dataArry[6]
-                    if(state == 0){
+                    console.log(state)
+                    if(state == 0 && (right == 1 || right == 4)){
+                        //alert('555')
                         self.noB = true
                         self.yesB = false
                     }
-                    if(self.dataArry[3] != null){
+                    console.log(self.dataArry[3])
+                    if(self.dataArry[3] != null && (right == 1 || right == 4)){
                         self.yesc = false,
                         self.noc = true
                     }
+                    /*路由传值，获得状态opassstate*/
+                    if (self.opassstate != 3) {
+                        self.noB = true
+                        self.yesB = false
+                        self.yesc = false,
+                        self.noc = true
+                    }
+                    //修改左侧和右侧按钮文字
+                    switch (self.right) {
+                      case 1:
+                        self.leftButtonText = '评价'
+                        self.rightButtonText = '取消'
+                        break
+                      case 2:
+                        self.leftButtonText = '通过'
+                        self.rightButtonText = '拒绝'
+                        break
+                      case 3:
+                        break
+                      case 4:
+                        // alert("该用户没有权限")
+                        self.leftButtonText = '评价'
+                        self.rightButtonText = '取消'
+                        break
+                      case 5:
+                        //管理员页面？
+                        break
+                      default:
+                        break
+                    }
                 })
+                /*用户权限控制*/
+                let session = localStorage.getItem("mUserInfo")
+                let mySession = JSON.parse(session)
+                let right = JSON.parse( localStorage.getItem("userRight"))
+                self.right = right
+                //修改左侧按钮文字
+                switch (right) {
+                  case 1:
+                    self.leftButtonText = '评价'
+                    self.rightButtonText = '取消'
+                    break
+                  case 2:
+                    break
+                  case 3:
+                    break
+                  case 4:
+                    // alert("该用户没有权限")
+                    self.leftButtonText = '评价'
+                    self.rightButtonText = '取消'
+                    break
+                  case 5:
+                    //管理员页面？
+                    break
+                  default:
+                    break
+                }
             },
-            submit(){
-                console.log(this.rid)
+            goComment(){
                 if(this.dataArry[3] == null){
                     this.$router.push({
                         path:"/mreview",
@@ -217,8 +331,128 @@
                     alert("你已经评论过啦")
                 }
             },
-            back(){
-                this.$router.go(-1)
+            goCancleTan(){
+                /*弹出弹窗*/
+                $("#mySearch").modal("show")
+            },
+            goCancle(){
+                /*弹出弹窗*/
+                // $("#mySearch").modal("show")
+                let self = this
+                let postData = {
+                    ocid:self.ocid,
+                    cancleContent:self.cancleContent
+                }
+                console.log(postData)
+
+                $.ajax({
+                    type:"POST",
+                    url:'/order/memberUpdateOrder',
+                    data:postData,
+                    success:function(res){
+                        if(res == 1){
+                          alert('操作成功')
+                        }else{
+                          alert('操作失败')
+                        }
+                    }
+                })
+            },
+            passCheck(){
+              //取出oid
+              let oid = this.oid
+              let pass = 2
+              let postData = {
+                oid:oid,
+                pass:pass
+              }
+              $.ajax({
+                  type:"POST",
+                  url:'/order/approveOrder',
+                  data:postData,
+                  success:function(res){
+                      //console.log(res)
+                    if(res == 1){
+                      alert('操作成功')
+                    }else{
+                      alert('操作失败')
+                    }
+                  }
+              })
+            },
+            repulse(){
+              /*弹出弹窗*/
+              $("#repulse").modal("show")
+            },
+            goRepulse(){
+              //取出oid
+              let oid = this.oid
+              let pass = 1
+              let message = this.repulseContent
+              let postData = {
+                oid:oid,
+                pass:pass,
+                message:message
+              }
+              $.ajax({
+                  type:"POST",
+                  url:'/order/approveOrder',
+                  data:postData,
+                  success:function(res){
+                      //console.log(res)
+                    if(res == 1){
+                      alert('操作成功')
+                    }else{
+                      alert('操作失败')
+                    }
+                  }
+              })
+            },
+            leftButton(){
+              let right = this.right
+              switch (right) {
+                case 1:
+                  this.goComment()
+                  break
+                case 2:
+                  //通过按钮
+                  this.passCheck()
+                  break
+                case 3:
+                  break
+                case 4:
+                  // alert("该用户没有权限")
+                  this.goComment()
+                  break
+                case 5:
+                  //管理员页面？
+                  break
+                default:
+                  break
+              }
+            },
+             rightButton(){
+              let right = this.right
+              switch (right) {
+                case 1:
+                  this.goCancleTan()//取消按钮
+                  break
+                case 2:
+                  //拒绝按钮
+                  this.repulse()
+                  break
+                case 3:
+                  break
+                case 4:
+                  // alert("该用户没有权限")
+                  this.goCancleTan()//取消按钮
+                  break
+                case 5:
+                  //管理员页面？
+                  break
+                default:
+                  break
+              }
             }
         }
     }

@@ -89,8 +89,8 @@
         <div class="kong"></div>
         <div class="button_btn">
             <!-- <button class="mindex_tab submit">编辑</button> -->
-            <button @click="goComment"  v-bind:class="{'submit':yesc,'submitChange':noc}">评价</button>
-            <button data-toggle="modal" data-target="#mySearch" v-bind:class="{'mindex_tab cancle':yesB,'submitChange':noB}">取消</button>
+            <button @click="leftButton"  v-bind:class="{'submit':yesc,'submitChange':noc}">{{leftButtonText}}</button>
+            <button @click="rightButton" v-bind:class="{'mindex_tab cancle':yesB,'submitChange':noB}">{{rightButtonText}}</button>
         </div>
 
         <!-- 取消预定弹窗 -->
@@ -114,9 +114,32 @@
                 </div>
             </div>
         </div>
+
+        <!-- 拒绝原因弹窗 -->
+        <div class="modal fade" id="repulse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="margin-top: 50px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="rej_title modal-title" id="myModalLabel">拒绝原因</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <textarea class="rej_textarea" v-model="repulseContent"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="rej_button btn cancle" @click="goRepulse">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
-<style scoped> 
+<style scoped>
     @import "../assets/css/bootstrap.min.css";
     @import "../assets/css/bootstrap-datetimepicker.min.css";
     @import "../assets/css/reset.css";
@@ -136,6 +159,7 @@
         data(){
             return{
                 ocid:0,
+                oid:0,
                 rid:0,
                 ocsourcename:'',
                 rname:'',
@@ -153,7 +177,12 @@
                 yesB:true,
                 noB:false,
                 yesc:true,
-                noc:false
+                noc:false,
+                leftButtonText:'',//左侧按钮显示文字
+                rightButtonText:'',//右侧按钮显示文字
+                right:0,//权限
+                opassstate:3,//假设为3，该值是有上一个页面传来
+                repulseContent:''//拒绝原因
             }
         },
         mounted(){
@@ -163,12 +192,12 @@
             //页面加载
             initDo(){
                 let self=this
-                let ocidData=115
+                let ocidData=62//测试临时数据
                 this.ocid=ocidData
                 let postData = {
                     ocid:ocidData
                 }
-                
+
                 this.axios.post('/order/selectOneInfo',this.qs.stringify(postData))
                 .then(function(res){
                     self.dataArry = res.data
@@ -181,6 +210,7 @@
                     self.ocusename = self.dataArry[0].ocusename
                     self.ocusephone = self.dataArry[0].ocusephone
                     self.rname = self.dataArry[4]//会议室名称
+                    self.oid = self.dataArry[0].oid
                     let beginTime = self.dataArry[0].ocbegintime
                     let endTime = self.dataArry[0].ocendtime
                     let kaishi = Global.dateToFormat(new Date(beginTime))
@@ -191,18 +221,58 @@
                     self.ag = self.dataArry[2]
                     /*基础物品信息列表*/
                     self.bg = self.dataArry[1]
-                    /*查看是否订单是已取消状态*/
+                    self.rid = self.dataArry[0].rid
+                    /*用户权限控制*/
+                    let session = localStorage.getItem("mUserInfo")
+                    let mySession = JSON.parse(session)
+                    let right = JSON.parse( localStorage.getItem("userRight"))
+                    right = 1//测试临时数据
+                    self.right = right
+                    /*更改按钮点击状态*/
                     let state = self.dataArry[6]
-                    if(state == 0){
+                    console.log(state)
+                    if(state == 0 && (right == 1 || right == 4)){
+                        //alert('555')
                         self.noB = true
                         self.yesB = false
                     }
-                    if(self.dataArry[3] != null){
+                    console.log(self.dataArry[3])
+                    if(self.dataArry[3] != null && (right == 1 || right == 4)){
                         self.yesc = false,
                         self.noc = true
                     }
-                    self.rid = self.dataArry[0].rid
+                    /*路由传值，获得状态opassstate*/
+                    if (self.opassstate != 3) {
+                        self.noB = true
+                        self.yesB = false
+                        self.yesc = false,
+                        self.noc = true
+                    }
+                    //修改左侧和右侧按钮文字
+                    switch (self.right) {
+                      case 1:
+                        self.leftButtonText = '评价'
+                        self.rightButtonText = '取消'
+                        break
+                      case 2:
+                        self.leftButtonText = '通过'
+                        self.rightButtonText = '拒绝'
+                        break
+                      case 3:
+                        break
+                      case 4:
+                        // alert("该用户没有权限")
+                        self.leftButtonText = '评价'
+                        self.rightButtonText = '取消'
+                        break
+                      case 5:
+                        //管理员页面？
+                        break
+                      default:
+                        break
+                    }
                 })
+
             },
             goComment(){
                 if(this.dataArry[3] == null){
@@ -217,7 +287,13 @@
                     alert("你已经评论过啦")
                 }
             },
+            goCancleTan(){
+                /*弹出弹窗*/
+                $("#mySearch").modal("show")
+            },
             goCancle(){
+                /*弹出弹窗*/
+                // $("#mySearch").modal("show")
                 let self = this
                 let postData = {
                     ocid:self.ocid,
@@ -230,9 +306,109 @@
                     url:'/order/memberUpdateOrder',
                     data:postData,
                     success:function(res){
-                        console.log(res)
+                        if(res == 1){
+                          alert('操作成功')
+                        }else{
+                          alert('操作失败')
+                        }
                     }
                 })
+            },
+            passCheck(){
+              //取出oid
+              let oid = this.oid
+              let pass = 2
+              let postData = {
+                oid:oid,
+                pass:pass
+              }
+              $.ajax({
+                  type:"POST",
+                  url:'/order/approveOrder',
+                  data:postData,
+                  success:function(res){
+                      //console.log(res)
+                    if(res == 1){
+                      alert('操作成功')
+                    }else{
+                      alert('操作失败')
+                    }
+                  }
+              })
+            },
+            repulse(){
+              /*弹出弹窗*/
+              $("#repulse").modal("show")
+            },
+            goRepulse(){
+              //取出oid
+              let oid = this.oid
+              let pass = 1
+              let message = this.repulseContent
+              let postData = {
+                oid:oid,
+                pass:pass,
+                message:message
+              }
+              $.ajax({
+                  type:"POST",
+                  url:'/order/approveOrder',
+                  data:postData,
+                  success:function(res){
+                      //console.log(res)
+                    if(res == 1){
+                      alert('操作成功')
+                    }else{
+                      alert('操作失败')
+                    }
+                  }
+              })
+            },
+            leftButton(){
+              let right = this.right
+              switch (right) {
+                case 1:
+                  this.goComment()
+                  break
+                case 2:
+                  //通过按钮
+                  this.passCheck()
+                  break
+                case 3:
+                  break
+                case 4:
+                  // alert("该用户没有权限")
+                  this.goComment()
+                  break
+                case 5:
+                  //管理员页面？
+                  break
+                default:
+                  break
+              }
+            },
+            rightButton(){
+              let right = this.right
+              switch (right) {
+                case 1:
+                  this.goCancleTan()//取消按钮
+                  break
+                case 2:
+                  //拒绝按钮
+                  this.repulse()
+                  break
+                case 3:
+                  break
+                case 4:
+                  // alert("该用户没有权限")
+                  this.goCancleTan()//取消按钮
+                  break
+                case 5:
+                  //管理员页面？
+                  break
+                default:
+                  break
+              }
             }
         }
     }
