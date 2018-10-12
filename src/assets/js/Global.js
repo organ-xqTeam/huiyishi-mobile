@@ -2,7 +2,7 @@ let loadingImg=require("../images/loading.gif")
 
 let Global=(function(){
   // let host="" //本地为空
-  let host=""
+  let host="/conference"
   function openLoading(){
     if($(".mLoading").length==0){
         var $div=$('<div class="mLoading" style="position:fixed;top:0;bottom:0;left:0;right:0;background-color: rgba(0,0,0,0.2);z-index:999;"><img src="'+loadingImg+'" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"></div>')

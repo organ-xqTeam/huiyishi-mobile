@@ -96,9 +96,13 @@
         //console.log(stateValueForm)
         let self = this
         let postData = {
-            stateValue : Number(stateValueForm)
+            stateValue : Number(stateValueForm),
+            serid : 11,//假设
+            rid : 5,
+            beginOtime : '2018-09-13',
+            endOtime : '2018-10-18'
         }
-        this.axios.post(Global.host+'/order/selectApproveListByState',this.qs.stringify(postData))
+        this.axios.post(Global.host+'/order/selectServiceListForMobile',this.qs.stringify(postData))
         .then(function(res){
             self.orderList = res.data
             let tempArry = res.data
