@@ -9,6 +9,9 @@ import mindexList from '@/pages/mindex_list' //我的预定
 import mreview from '@/pages/mreview' //评论
 import morderContentBase from '@/pages/morderContent_base' //订单基础信息
 import morderContentSupply from '@/pages/morderContent_supply' //订单细节信息
+import mindexlistmember from '@/pages/mindex_list-member' //普通用户列表
+import mindexlistapprove from '@/pages/mindex_list-approve'//主管列表
+import mindexlistservice from '@/pages/mindex_list-service'//服务列表
 Vue.use(Router)
 
 export default new Router({
@@ -61,6 +64,18 @@ export default new Router({
       path: '/morderContent/supply',
       name: 'morderContentSupply',
       component: morderContentSupply
+    },{
+      path: '/mindexlist/member',
+      name: 'mindexlistmember',
+      component: mindexlistmember
+    },{
+      path: '/mindexlist/approve',
+      name: 'mindexlistapprove',
+      component: mindexlistapprove
+    },{
+      path: '/mindexlist/service',
+      name: 'mindexlistservice',
+      component: mindexlistservice
     }
   ]
 })

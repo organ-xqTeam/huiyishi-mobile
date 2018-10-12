@@ -192,7 +192,7 @@
             //页面加载
             initDo(){
                 let self=this
-                let ocidData=62//测试临时数据
+                let ocidData=this.$route.query.ocid
                 this.ocid=ocidData
                 let postData = {
                     ocid:ocidData
