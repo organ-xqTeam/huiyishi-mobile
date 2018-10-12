@@ -28,6 +28,8 @@ export default {
     return {
       name:"",
       password:"",
+
+      state:"",
     }
   },
   mounted() {
@@ -47,30 +49,15 @@ export default {
 				userNames: name,
 				password: password,
 			}
-      let url=`${Global.host}/user/login?interfaceNum=${postData.interfaceNum}&userNames=${postData.userNames}&password=${postData.password}`
       console.log(postData)
-      console.log(url)
       Global.openLoading()
-
-// this.axios(`/user/login?interfaceNum=${postData.interfaceNum}&userNames=${postData.userNames}&password=${postData.password}`, {
-//     method: 'GET',
-//     mode: 'no-cors',
-//     // headers: {
-//     //   'Access-Control-Allow-Origin': 'https://localhost:8089/',
-
-//     //   'Content-Type': 'application/json',
-//     // },
-//   // withCredentials: true,
-//     credentials: 'same-origin',
-//   })
-//   .then(response => {
-//   })
-
       this.axios.get(`/user/login?interfaceNum=${postData.interfaceNum}&userNames=${postData.userNames}&password=${postData.password}`)
       .then(function (response) {
         console.log(response);
         let state=Number(response.data)
+        self.state=state
 
+        //获取用户信息
         self.getMyInfo(function(){
           //1.普通用户 2.主管部门 3.服务部门 4.没有权限的 5.管理员 6.用户不存在
           Global.closeLoading()
@@ -115,15 +102,19 @@ export default {
     },
     //获取我的信息 把用户信息保存到localstorage
 		getMyInfo(callback){
+      let self=this
       let url="/user/outPutSession"
       this.axios.get(url)
       .then(function(res){
           console.log(res)
 					//保存自己的用户信息到localstorage
-					var mUserInfo=res.data
+          var mUserInfo=res.data
+          mUserInfo.state=self.state //保存权限
 					localStorage.setItem("mUserInfo",JSON.stringify(mUserInfo))
 
-					callback()
+					if(callback){
+            callback()
+          }
       })
       .catch(function(res){
         console.log(res)
