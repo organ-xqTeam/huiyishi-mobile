@@ -82,7 +82,7 @@
             stateType : stateTypeForm,
             stateValue : stateValueForm,
         }
-        this.axios.post('/order/selectOrderListByMidAndState',this.qs.stringify(postData))
+        this.axios.post(Global.host+'/order/selectOrderListByMidAndState',this.qs.stringify(postData))
         .then(function(res){
             self.orderList = res.data
             let tempArry = res.data

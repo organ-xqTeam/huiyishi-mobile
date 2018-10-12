@@ -51,7 +51,7 @@ export default {
 			}
       console.log(postData)
       Global.openLoading()
-      this.axios.get(`/user/login?interfaceNum=${postData.interfaceNum}&userNames=${postData.userNames}&password=${postData.password}`)
+      this.axios.get(`${Global.host}/user/login?interfaceNum=${postData.interfaceNum}&userNames=${postData.userNames}&password=${postData.password}`)
       .then(function (response) {
         console.log(response);
         let state=Number(response.data)
@@ -103,7 +103,7 @@ export default {
     //获取我的信息 把用户信息保存到localstorage
 		getMyInfo(callback){
       let self=this
-      let url="/user/outPutSession"
+      let url=Global.host+"/user/outPutSession"
       this.axios.get(url)
       .then(function(res){
           console.log(res)

@@ -70,8 +70,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+@import "../assets/css/bootstrap.min.css";
+@import "../assets/css/bootstrap-datetimepicker.min.css";
+@import "../assets/css/reset.css";
 @import "../assets/css/mindex.css";
 @import "../assets/css/mlist.css";
+
 .mSelected{
   background-color: #eaf9f9;
 }

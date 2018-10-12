@@ -467,7 +467,7 @@
       getTaixing(callback) {
         let self = this
         $(".toSupply").addClass("eventsDisabled")
-        this.axios.get("/cplatform/selectList")
+        this.axios.get(Global.host+"/cplatform/selectList")
           .then(function (res) {
             $(".toSupply").removeClass("eventsDisabled")
             console.log(res)
@@ -498,7 +498,7 @@
         let self = this
         $(".basicBtn").addClass("eventsDisabled")
         Global.openLoading()
-        this.axios.get("/order/selectBgList")
+        this.axios.get(Global.host+"/order/selectBgList")
           .then(function (res) {
             Global.closeLoading()
             $(".basicBtn").removeClass("eventsDisabled")
@@ -558,7 +558,7 @@
         let self = this
         $(".addedBtn").addClass("eventsDisabled")
         Global.openLoading()
-        this.axios.get("/order/selectAgList")
+        this.axios.get(Global.host+"/order/selectAgList")
         .then(function (res) {
           Global.closeLoading()
           $(".addedBtn").removeClass("eventsDisabled")
@@ -749,7 +749,7 @@
         // return
         Global.openLoading()
         $("#allSubmit").addClass("eventsDisabled")
-        this.axios.post('/user/reserve', this.qs.stringify(postData))
+        this.axios.post(Global.host+'/user/reserve', this.qs.stringify(postData))
         .then(function (res) {
           Global.closeLoading()
           $("#allSubmit").removeClass("eventsDisabled")

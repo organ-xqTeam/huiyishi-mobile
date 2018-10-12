@@ -220,7 +220,7 @@
                     ocid:this.ocid
                 }
                 let self = this
-                this.axios.post('/order/selectOneInfo',this.qs.stringify(postData))
+                this.axios.post(Global.host+'/order/selectOneInfo',this.qs.stringify(postData))
                 .then(function(res){
                     console.log(res)
                     self.dataArry=res.data

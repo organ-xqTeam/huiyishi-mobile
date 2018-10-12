@@ -78,7 +78,7 @@
         let postData = {
             stateValue : Number(stateValueForm)
         }
-        this.axios.post('/order/selectApproveListByState',this.qs.stringify(postData))
+        this.axios.post(Global.host+'/order/selectApproveListByState',this.qs.stringify(postData))
         .then(function(res){
             self.orderList = res.data
             let tempArry = res.data

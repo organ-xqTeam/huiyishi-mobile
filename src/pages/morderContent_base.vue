@@ -198,7 +198,7 @@
                     ocid:ocidData
                 }
 
-                this.axios.post('/order/selectOneInfo',this.qs.stringify(postData))
+                this.axios.post(Global.host+'/order/selectOneInfo',this.qs.stringify(postData))
                 .then(function(res){
                     self.dataArry = res.data
                     console.log(self.dataArry)

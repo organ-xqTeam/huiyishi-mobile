@@ -140,7 +140,7 @@ export default {
     getRtypeSelect(callback) {
       let self=this
       this.axios
-        .get("/room/selectRoomTypeList")
+        .get(Global.host+"/room/selectRoomTypeList")
         .then(function(res) {
           console.log(res)
           if(res.data&&res.data.length>0){
@@ -164,7 +164,7 @@ export default {
       console.log(date);
       this.axios
         .post(
-          "/order/selectRoomnameAndNum",
+          Global.host+"/order/selectRoomnameAndNum",
           this.qs.stringify({
             date: date
           })

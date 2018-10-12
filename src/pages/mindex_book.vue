@@ -176,7 +176,7 @@ export default {
       }
       console.log(postData)
       Global.openLoading()
-      this.axios.post('/user/showRoomByAssignDay',this.qs.stringify(postData))
+      this.axios.post(Global.host+'/user/showRoomByAssignDay',this.qs.stringify(postData))
       .then(function(res){
         Global.closeLoading()
         console.log(res)
@@ -272,7 +272,7 @@ export default {
       }
       console.log(postData)
       Global.openLoading()
-      this.axios.post("/room/selectOneRoomByRid",this.qs.stringify(postData))
+      this.axios.post(Global.host+"/room/selectOneRoomByRid",this.qs.stringify(postData))
       .then(function(res){
         Global.closeLoading()
         console.log(res)

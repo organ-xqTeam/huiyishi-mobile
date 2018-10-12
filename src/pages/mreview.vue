@@ -53,7 +53,7 @@
                 //console.log(this.commentText)
             }
         },
-        methods:{        
+        methods:{
             addStart(index){
                 console.log(index)
                 this.indexReal = index+1
@@ -91,7 +91,7 @@
                 }
                 let commentText = this.commentText.trim()
                 let indexReal = this.indexReal
-                
+
                 let postData = {
                     cmcontent: commentText,
                     cmgrade:indexReal,
@@ -99,7 +99,7 @@
                     ocid:this.ocid,
                 }
                 console.log(postData)
-                this.axios.post('/comment/insertOneComment',this.qs.stringify(postData))
+                this.axios.post(Global.host+'/comment/insertOneComment',this.qs.stringify(postData))
                 .then(function(res){
                     console.log(res)
                 })
