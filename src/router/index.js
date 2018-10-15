@@ -41,7 +41,7 @@ export default new Router({
       component: mindexBasic,
     },
     {
-      path: '/mreview',
+      path: '/memberlist/morderContent/base/mreview',
       name: 'mreview',
       component: mreview
     },

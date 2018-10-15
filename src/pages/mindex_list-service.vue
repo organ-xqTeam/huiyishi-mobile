@@ -75,7 +75,7 @@ export default {
     };
   },
   mounted() {
-    this.waitingOrderMet(3, "待接单");
+    this.waitingOrderMet(1, "待接单");
     this.initSome()
   },
   methods: {
@@ -117,13 +117,13 @@ export default {
         .removeClass("mlist_tab_act");
       switch (id) {
         case "waitingOrder":
-          this.waitingOrderMet(3, "待接单");
+          this.waitingOrderMet(1, "待接单");
           break;
         case "passOrder":
           this.waitingOrderMet(2, "服务中");
           break;
         case "repulshOrder":
-          this.waitingOrderMet(1, "已完成");
+          this.waitingOrderMet(3, "已完成");
           break;
       }
     },
@@ -210,13 +210,13 @@ export default {
 
       switch (id) {
         case "waitingOrder":
-          this.waitingOrderMet(3, "待接单" ,searchName,searchBgtime,searchEdtime);
+          this.waitingOrderMet(1, "待接单" ,searchName,searchBgtime,searchEdtime);
           break;
         case "passOrder":
           this.waitingOrderMet(2, "服务中" ,searchName,searchBgtime,searchEdtime);
           break;
         case "repulshOrder":
-          this.waitingOrderMet(1, "已完成" ,searchName,searchBgtime,searchEdtime);
+          this.waitingOrderMet(3, "已完成" ,searchName,searchBgtime,searchEdtime);
           break;
       }
 

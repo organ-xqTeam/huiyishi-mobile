@@ -82,29 +82,51 @@
     </div>
     <div>
       <router-link :to="{path:'/memberlist/morderContent/base/supply',query:{ocid:this.ocid} }">
-        <button class="add_info toSupply"
-                style="color:#000;height:47px;border-radius:0px;">查看会议补充信息</button>
+        <button class="add_info toSupply blueBg"
+                style="color:#fff;height:47px;border-radius:0px;">查看会议补充信息</button>
       </router-link>
     </div>
-    <div class="look_goods" style="margin-top:0;">
-      <div class="look_title ac" style="font-size:1.3em;">基础会议物品</div>
-      <ul class="look_ul">
-        <li v-for="(item,index) in bg" :key="index">{{item.boname}} <span>{{item.bonum}}</span></li>
-      </ul>
-    </div>
-    <div class="look_goods">
-      <div class="look_title ac" style="font-size:1.3em;">增值会议物品</div>
-      <ul class="look_ul">
-        <li v-for="(item,index) in ag" :key="index">{{item.aoname}} <span>{{item.aonum}}</span></li>
-      </ul>
-    </div>
+    <template v-cloak v-if="bg.length>0">
+      <div class="look_goods" style="margin-top:0;">
+        <div class="look_title ac" style="font-size:1.3em;">基础会议物品</div>
+          <ul class="look_ul">
+            <li v-for="(item,index) in bg" :key="index">{{item.boname}} <span>{{item.bonum}}</span></li>
+          </ul>
+      </div>
+    </template>
+    <template v-cloak v-if="ag.length>0">
+      <div class="look_goods">
+        <div class="look_title ac" style="font-size:1.3em;">增值会议物品</div>
+        <ul class="look_ul">
+          <li v-for="(item,index) in ag" :key="index">{{item.aoname}} <span>{{item.aonum}}</span></li>
+        </ul>
+      </div>
+    </template>
+
+    <!-- 指派服务人员 -->
+    <template v-cloak v-if="Number(queryInfo.otakeorder)==1">
+      <div class="look_goods blueBg" @click="goAssignSer">
+        <div class="look_title ac" style="font-size:1.3em;">指派服务人员</div>
+        <!-- <ul class="look_ul">
+          <li v-for="(item,index) in ag" :key="index">{{item.aoname}} <span>{{item.aonum}}</span></li>
+        </ul> -->
+      </div>
+      <!-- 展示选择的服务人员 -->
+      <div class="serPerWrap" style="width:88%;margin:0 auto;">
+        <label class="serPerItem" style="text-indent:1em;"
+              v-for="(item,index) in selectedSerPerReal" :key="index">{{item.name}}</label>
+      </div>
+    </template>
+
     <div class="kong"></div>
 
     <!--下面按钮-->
     <div class="button_btn">
       <!-- 普通用户 -->
       <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='member'">
-        <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==3&&dataArry[3]==null">评价</button>
+        <button class="blueBg"
+                v-cloak v-if="Number(queryInfo.otakeorder)==3&&dataArry[3]==null"
+                @click="goComment">评价</button>
         <button class="blueBg" v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0"
                 @click="goCancleTan">取消预定</button>
       </template>
@@ -115,17 +137,22 @@
                 @click="passCheck">通过</button>
         <button class="blueBg"
                 v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0"
-                @click="goCancleTan">拒绝</button>
+                @click="openRepulse">拒绝</button>
       </template>
       <!-- 服务部门 -->
+      <!-- otakeorder 1未接单 2服务中 3已完成 -->
+      <!-- otakeorder 服务状态(1.未接单 2.服务中3.服务完成  默认为1 ) -->
+      <!-- orderstate;//订单状态(0.以取消 1.未取消  2.已完成   数据库默认未取消为1) -->
       <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='service'">
-        <!-- <button class="whiteBg" v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0">通过</button> -->
+        <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==1"
+                @click="submitAssignSer">提交</button>
         <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==3"
                 @click="goCancleTan">修改会议物品</button>
       </template>
 
       <button class="whiteBg" @click="routerGoback">返回</button>
     </div>
+    <!--下面按钮 end -->
 
     <!-- 取消预定弹窗 -->
     <div class="modal fade" id="mySearch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -171,6 +198,24 @@
       </div>
     </div>
 
+    <!-- 指派服务人员页面 /////////////////////////////////////////////////////////////////////////////////////// -->
+    <div class="assignSer-page" v-cloak v-show="showSerPage">
+      <div class="basic_title mindex_top ac">选择服务人员</div>
+      <div class="serPerWrap">
+        <label class="serPerItem" v-for="(item,index) in serPerArr" :key="index">
+          <input type="checkbox" :value="index" v-model="selectedSerPer">
+          <span>{{item.name}}</span>
+        </label>
+      </div>
+
+      <!--下面按钮-->
+      <div class="button_btn">
+        <button class="blueBg" @click="confirmSerPer">确认</button>
+        <button class="whiteBg" @click="closeSerPerPage">取消</button>
+      </div>
+      <!--下面按钮 end -->
+    </div>
+
   </div>
 </template>
 
@@ -209,8 +254,24 @@ export default {
       rightButtonText: "", //右侧按钮显示文字
       right: "", //权限
       opassstate: 3, //假设为3，该值是有上一个页面传来
-      repulseContent: "" //拒绝原因
-    };
+      repulseContent: "", //拒绝原因
+
+
+      //指派服务人员页面
+      showSerPage:false,
+      serPerArr:[],
+      selectedSerPer:[], //选择的服务人员的index集合
+      // selectedSerPerReal:[], //选择的服务人员item
+    }
+  },
+  computed:{
+    selectedSerPerReal(){ //选择的服务人员item
+      let self=this
+      let arr=this.serPerArr.filter(function(obj,index){
+        return self.selectedSerPer.indexOf(index)>-1
+      })
+      return arr
+    }
   },
   mounted() {
     this.getPageInfo()
@@ -324,7 +385,7 @@ export default {
     goComment() {
       if (this.dataArry[3] == null) {
         this.$router.push({
-          path: "/mreview",
+          path: "/memberlist/morderContent/base/mreview",
           query: {
             ocid: this.ocid,
             rid: this.rid
@@ -406,7 +467,7 @@ export default {
         }
       });
     },
-    repulse() {
+    openRepulse() {
       /*弹出弹窗*/
       $("#repulse").modal("show");
     },
@@ -499,7 +560,81 @@ export default {
     routerGoback(){
       //返回上一个路由
       this.$router.go(-1)
-    }
+    },
+    //去指派人员页面
+    goAssignSer(){
+      let self=this
+      if(this.serPerArr.length==0){
+        this.getSerPerArr(function(){
+          self.showSerPage=true
+        })
+      }else{
+        this.showSerPage=true
+      }
+    },
+    //获取服务人员名单
+    getSerPerArr(callback){
+      let self = this;
+      Global.openLoading()
+      this.axios
+        .get(Global.host + "/servicepeo/selectServicepeoByOther")
+        .then(function(res) {
+          Global.closeLoading()
+          console.log(res)
+          let arr=res.data.staffList
+          if(arr.length==0){
+            alert("当前没有服务人员")
+            return
+          }else{
+            self.serPerArr=arr
+            if(callback){
+              callback()
+            }
+          }
+        })
+        .catch(function(res){
+          Global.closeLoading()
+        });
+    },
+    //关闭指派服务人员页面 并删除已选择的服务人员
+    closeSerPerPage(){
+      this.selectedSerPer=[]
+      this.showSerPage=false
+    },
+    //指派服务人员-确认
+    confirmSerPer(){
+      this.showSerPage=false
+    },
+    //最后提交服务人员
+    submitAssignSer(){
+      let self = this
+      //验证一下
+      if(this.selectedSerPer.length==0){
+        alert("您当前未选择服务人员")
+        return
+      }
+
+      let result=confirm("确认指派服务人员？")
+      if(result){
+        let idArr=this.selectedSerPerReal.map(function(obj){
+          return obj.id
+        })
+        let postData = {
+					ocid: Number(this.ocid),
+					id: idArr,
+				}
+        console.log(postData)
+        Global.openLoading()
+        $.post(Global.host + "/servicepeo/insertServiceOrder",postData,function(res){
+          Global.closeLoading()
+          console.log(res)
+          if(res&&Number(res)==1){
+            alert("指派服务人员成功")
+            self.$router.go(-1)
+          }
+        })
+      }
+    },
   }, //methods end
 };
 </script>
@@ -510,6 +645,10 @@ export default {
 @import "../assets/css/mindex.css";
 @import "../assets/css/mdetail.css";
 
+.noDataTip{
+  line-height: 50px;
+  text-align: center;
+}
 .whiteBg{
   background-color: #fff;
   color: #000;
@@ -517,5 +656,33 @@ export default {
 .blueBg{
   background-color: #2ec5c4;
   color: #fff;
+}
+
+/* 指派服务人员页面 */
+.assignSer-page{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f1f5f6;
+  z-index: 7;
+}
+.serPerWrap{
+  display: flex;
+  flex-wrap: wrap;
+}
+.serPerItem{
+  flex: 0 0 calc(33.3333% - 10px);
+  display: flex;
+  align-items: center;
+  line-height: 30px;
+  background-color: #fff;
+  margin: 5px;
+  box-shadow: 0 0 2px 0 rgba(214, 214, 214, 0.50);
+  font-weight: normal;
+}
+.serPerItem>input{
+  margin:0 5px;
 }
 </style>
