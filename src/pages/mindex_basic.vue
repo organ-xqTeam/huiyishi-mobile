@@ -475,10 +475,17 @@
               let arr = res.data
               console.log(arr) //台型数组
               self.taixingArr = arr
+
+              if(callback){
+                callback()
+              }
             }
           })
           .catch(function (res) {
             console.log(res)
+            if(callback){
+              callback()
+            }
           })
       },
       //基础物品----------------------------------------------------------------------------
@@ -757,8 +764,10 @@
           if (res.data&&Number(res.data)==1) {
             alert("预定成功")
             self.$router.push({
-                path:"/mindex_list"
+                path:"/mindexlist/member"
             })
+          }else{
+            alert("请求失败")
           }
         })
         .catch(function (res) {

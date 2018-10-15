@@ -35,7 +35,7 @@
     <!-- 下方按钮 -->
     <div class="button_btn">
       <router-link class="mindex_tab mycolor" to="/mindex" style="font-size: 1em;"><i class="iconfont icon-shouye"></i> <br>首页</router-link>
-      <router-link class="mindex_tab" to="/mindexList" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>我的预定</router-link>
+      <router-link class="mindex_tab" to="/mindexlist/member" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>我的预定</router-link>
 
       <router-link class="mindex_tab" to="/mindexlist/approve" style="font-size: 1em;" v-cloak v-show="Number(rightState)==2"><i class="iconfont icon-liebiao"></i><br>审批管理</router-link>
       <router-link class="mindex_tab" to="/mindexlist/service" style="font-size: 1em;" v-cloak v-show="Number(rightState)==3"><i class="iconfont icon-liebiao"></i><br>服务管理</router-link>
@@ -162,6 +162,7 @@ export default {
       let self = this;
       let date = this.dateArr[this.selectedDateIndex].dateStr;
       console.log(date);
+      Global.openLoading()
       this.axios
         .post(
           Global.host+"/order/selectRoomnameAndNum",
@@ -170,6 +171,7 @@ export default {
           })
         )
         .then(function(response) {
+          Global.closeLoading()
           console.log(response);
           self.showArr = response.data;
 
@@ -178,6 +180,7 @@ export default {
           }
         })
         .catch(function(error) {
+          Global.closeLoading()
           console.log(error);
         });
     },

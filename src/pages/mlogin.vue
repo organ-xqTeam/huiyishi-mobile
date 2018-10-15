@@ -110,6 +110,7 @@ export default {
 					//保存自己的用户信息到localstorage
           var mUserInfo=res.data
           mUserInfo.state=self.state //保存权限
+          mUserInfo.state=3 //保存权限 //测试用
 					localStorage.setItem("mUserInfo",JSON.stringify(mUserInfo))
 
 					if(callback){

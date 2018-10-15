@@ -222,7 +222,7 @@ export default {
       })
       console.log(bgIndex,edIndex)
       //给time数组添加isAlready属性
-      for(let i=0;i<edIndex-bgIndex;i++){
+      for(let i=0;i<=edIndex-bgIndex;i++){
         this.items[edIndex+i].isAlready=true
       }
       console.log(this.items)
