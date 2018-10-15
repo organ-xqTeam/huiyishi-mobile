@@ -59,17 +59,17 @@ export default new Router({
       path: '/mindexlist/member',
       name: 'mindexlistmember',
       component: mindexlistmember,
-      meta:{keepAlive:true}
+      // meta:{keepAlive:true}
     },{
       path: '/mindexlist/approve',
       name: 'mindexlistapprove',
       component: mindexlistapprove,
-      meta:{keepAlive:true}
+      // meta:{keepAlive:true}
     },{
       path: '/mindexlist/service',
       name: 'mindexlistservice',
       component: mindexlistservice,
-      meta:{keepAlive:true}
+      // meta:{keepAlive:true}
     }
   ]
 })

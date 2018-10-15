@@ -110,8 +110,11 @@
       </template>
       <!-- 审批部门 -->
       <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='approve'">
-        <button class="whiteBg" v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0">通过</button>
-        <button class="blueBg" v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0"
+        <button class="whiteBg" id="realPassBtn"
+                v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0"
+                @click="passCheck">通过</button>
+        <button class="blueBg"
+                v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0"
                 @click="goCancleTan">拒绝</button>
       </template>
       <!-- 服务部门 -->
@@ -140,7 +143,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="rej_button btn cancle" @click="goCancle">确定</button>
+            <button type="button" class="rej_button btn cancle" id="realCancelBtn" @click="goCancle">确定</button>
           </div>
         </div>
       </div>
@@ -162,7 +165,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="rej_button btn cancle" @click="goRepulse">确定</button>
+            <button type="button" class="rej_button btn cancle" id="realRepulseBtn" @click="goRepulse">确定</button>
           </div>
         </div>
       </div>
@@ -336,22 +339,35 @@ export default {
       $("#mySearch").modal("show");
     },
     goCancle() {
-      /*弹出弹窗*/
-      // $("#mySearch").modal("show")
       let self = this;
+      //先验证一下
+      if(this.cancleContent.trim()==""){
+        alert("请输入取消原因")
+        return
+      }
+
+      let result=confirm("确定取消该订单？")
+      if(!result){
+        return
+      }
       let postData = {
         ocid: self.ocid,
         cancleContent: self.cancleContent
       };
       console.log(postData);
-
+      $("#realCancelBtn").addClass("eventsDisabled")
       $.ajax({
         type: "POST",
         url: "/order/memberUpdateOrder",
         data: postData,
         success: function(res) {
-          if (res == 1) {
+          $("#realCancelBtn").removeClass("eventsDisabled")
+          console.log(res)
+          if (Number(res) == 1) {
             alert("操作成功");
+            $("#mySearch").modal("hide");
+
+            self.$router.go(-1);
           } else {
             alert("操作失败");
           }
@@ -359,6 +375,11 @@ export default {
       });
     },
     passCheck() {
+      let self=this
+      let result=confirm("确定通过该订单？")
+      if(!result){
+        return
+      }
       //取出oid
       let oid = this.oid;
       let pass = 2;
@@ -366,14 +387,19 @@ export default {
         oid: oid,
         pass: pass
       };
+      console.log(postData)
+      $("#realPassBtn").addClass("eventsDisabled")
       $.ajax({
         type: "POST",
         url: "/order/approveOrder",
         data: postData,
         success: function(res) {
+          $("#realPassBtn").removeClass("eventsDisabled")
           //console.log(res)
-          if (res == 1) {
+          if (Number(res) == 1) {
             alert("操作成功");
+
+            self.$router.go(-1);
           } else {
             alert("操作失败");
           }
@@ -385,6 +411,17 @@ export default {
       $("#repulse").modal("show");
     },
     goRepulse() {
+      let self=this
+      // 先验证一下
+      if(this.repulseContent.trim()==""){
+        alert("请输入拒绝原因")
+        return
+      }
+
+      let result=confirm("确定拒绝该订单？")
+      if(!result){
+        return
+      }
       //取出oid
       let oid = this.oid;
       let pass = 1;
@@ -394,14 +431,19 @@ export default {
         pass: pass,
         message: message
       };
+      $("#realRepulseBtn").addClass("eventsDisabled")
       $.ajax({
         type: "POST",
         url: "/order/approveOrder",
         data: postData,
         success: function(res) {
+          $("#realRepulseBtn").removeClass("eventsDisabled")
           //console.log(res)
-          if (res == 1) {
+          if (Number(res) == 1) {
             alert("操作成功");
+            $("#repulse").modal("hide");
+
+            self.$router.go(-1);
           } else {
             alert("操作失败");
           }

@@ -12,7 +12,10 @@
         <a v-for="(item,index) in orderList" :key="index" href="javascript:void(0)" @click="targetContent(item)" class="mindex_item">
           <div class="mindex_item_name">{{item.rname}}</div>
           <div class="mindex_item_info clearfix" style="margin-bottom: 8px;">{{beginTime[index]}}-{{endTime[index]}}</div>
-          <div class="mindex_item_info clearfix">{{item.ocreservename}} <span class="mindex_item_fr fr">{{orderState}}</span></div>
+          <div class="mindex_item_info clearfix">{{item.ocreservename}}
+            <span class="mindex_item_fr fr" style="color:#989898;;" v-if="Number(item.orderstate)==0">已取消</span>
+            <span class="mindex_item_fr fr" v-else>{{orderState}}</span>
+          </div>
         </a>
       </template>
       <div class="noDataTip" v-cloak v-else>
@@ -44,7 +47,7 @@ export default {
       beginTime: [],
       endTime: [],
       /*同一状态*/
-      orderState: ""
+      orderState: "",
     };
   },
   mounted() {
@@ -105,6 +108,7 @@ export default {
           self.orderList = res.data;
           let tempArry = res.data;
           for (let index = 0; index < tempArry.length; index++) {
+            console.log(tempArry[index])
             let begintime = tempArry[index].ocbegintime; //开始时间
             let endtime = tempArry[index].ocendtime; //结束时间
             let begintimeString = Global.dateToFormat(new Date(begintime));
