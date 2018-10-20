@@ -79,6 +79,7 @@ export default {
       this.starArr=arrTemp
     },
     sendSubmit() {
+      let self=this
       console.log(this.rid);
       //验证下评论内容
       let check = this.checkRe();
@@ -96,13 +97,34 @@ export default {
         ocid: this.ocid
       };
       console.log(postData);
+      self.$router.push({
+        path: "/mindexlist/member",
+        query: {
+          ocid: item.ocid,
+          item:item
+        }
+      });
+      return
       this.axios
         .post(
           Global.host + "/comment/insertOneComment",
           this.qs.stringify(postData)
         )
         .then(function(res) {
-          console.log(res);
+          console.log(res)
+          if(res&&Number(res)==1){
+            alert("评论成功")
+            self.$router.push({
+              path: "/mindexlist/member",
+              query: {
+                ocid: item.ocid,
+                item:item
+              }
+            });
+          }
+        })
+        .catch(function(res){
+          console.log(res)
         });
     },
     checkRe() {

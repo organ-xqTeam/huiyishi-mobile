@@ -93,6 +93,11 @@
           </ul>
         </div>
       </template>
+      <template v-cloak v-else>
+        <div class="look_goods" style="padding:5px 0;text-align:center;margin-top:0;">
+          未选择基础物品
+        </div>
+      </template>
       <template v-cloak v-if="ag.length>0">
         <div class="look_goods">
           <div class="look_title ac" style="font-size:1.3em;">增值物品</div>
@@ -101,20 +106,44 @@
           </ul>
         </div>
       </template>
+      <template v-cloak v-else>
+        <div class="look_goods" style="padding:5px 0;text-align:center;">
+          未选择增值物品
+        </div>
+      </template>
 
       <!-- 指派服务人员 -->
-      <template v-cloak v-if="Number(queryInfo.otakeorder)==1&&queryInfo.fromPage&&queryInfo.fromPage=='service'&&Number(queryInfo.orderstate)!==0">
+      <template v-cloak v-if="Number(queryInfo.otakeorder)==1&&
+                              queryInfo.fromPage&&
+                              queryInfo.fromPage=='service'&&
+                              Number(queryInfo.orderstate)!==0">
         <div class="look_goods blueBg" style="border-radius:6px;" @click="goAssignSer">
           <div class="look_title ac" style="font-size:1.3em;">指派服务人员</div>
-          <!-- <ul class="look_ul">
-            <li v-for="(item,index) in ag" :key="index">{{item.aoname}} <span>{{item.aonum}}</span></li>
-          </ul> -->
         </div>
         <!-- 展示选择的服务人员 -->
         <div class="serPerWrap" style="width:88%;margin:0 auto;">
           <label class="serPerItem" style="text-indent:1em;" v-for="(item,index) in selectedSerPerReal" :key="index">{{item.name}}</label>
         </div>
       </template>
+      <!-- 指派服务人员 end -->
+
+      <!-- 指定对接人员 -->
+      <template v-cloak v-if="Number(queryInfo.otakeorder)==1&&
+                              queryInfo.fromPage&&
+                              queryInfo.fromPage=='service'&&
+                              Number(queryInfo.orderstate)!==0&&
+
+                              dataArry.length!==0&&
+                              Number(dataArry[0].ocdockingstate)==1">
+        <div class="look_goods blueBg" style="border-radius:6px;" @click="goAssignDocking">
+          <div class="look_title ac" style="font-size:1.3em;">指定对接人员</div>
+        </div>
+        <!-- 展示选择的对接人员 -->
+        <div class="serPerWrap" style="width:88%;margin:0 auto;">
+          <label class="serPerItem" style="text-indent:1em;" v-cloak v-if="selectedDockingPer.name">{{selectedDockingPer.name}}</label>
+        </div>
+      </template>
+      <!-- 指定对接人员 end -->
 
       <div class="kong"></div>
     </div>
@@ -124,6 +153,8 @@
       <!-- 普通用户 -->
       <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='member'">
         <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==3&&dataArry[3]==null" @click="goComment">评价</button>
+        <button class="blueBg" style="background-color:#c3c3c3;"
+                v-cloak v-if="Number(queryInfo.otakeorder)==3&&dataArry[3]!==null">已评价</button>
         <button class="blueBg" v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0" @click="goCancleTan">取消预定</button>
       </template>
       <!-- 审批部门 -->
@@ -136,7 +167,7 @@
       <!-- otakeorder 服务状态(1.未接单 2.服务中3.服务完成  默认为1 ) -->
       <!-- orderstate;//订单状态(0.以取消 1.未取消  2.已完成   数据库默认未取消为1) -->
       <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='service'&&Number(queryInfo.orderstate)!==0">
-        <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==1" @click="submitAssignSer">提交</button>
+        <button class="blueBg" id="submitTakeOrderBtn" v-cloak v-if="Number(queryInfo.otakeorder)==1" @click="submitTakeOrder">接单</button>
         <template v-cloak v-if="Number(queryInfo.otakeorder)==3">
           <button class="whiteBg" @click="openGoodPage">修改物品</button>
           <button class="blueBg" id="submitChangeGood" @click="submitChangeGood">确认</button>
@@ -193,7 +224,7 @@
 
     <!-- 指派服务人员页面 /////////////////////////////////////////////////////////////////////////////////////// -->
     <div class="assignSer-page" v-cloak v-show="showSerPage">
-      <div class="basic_title mindex_top ac">选择服务人员</div>
+      <div class="basic_title mindex_top ac">选择人员</div>
       <div class="serPerWrap">
         <label class="serPerItem" v-for="(item,index) in serPerArr" :key="index">
           <input type="checkbox" :value="index" v-model="selectedSerPer">
@@ -205,6 +236,23 @@
       <div class="button_btn">
         <button class="blueBg" @click="confirmSerPer">确认</button>
         <button class="whiteBg" @click="closeSerPerPage">取消</button>
+      </div>
+      <!--下面按钮 end -->
+    </div>
+    <!-- 指定对接人员页面 /////////////////////////////////////////////////////////////////////////////////////// -->
+    <div class="assignSer-page" v-cloak v-show="showDockingPage">
+      <div class="basic_title mindex_top ac">选择人员</div>
+      <div class="serPerWrap">
+        <label class="serPerItem" v-for="(item,index) in serPerArr" :key="index">
+          <input type="radio" :value="item" v-model="selectedDockingPer">
+          <span>{{item.name}}</span>
+        </label>
+      </div>
+
+      <!--下面按钮-->
+      <div class="button_btn">
+        <button class="blueBg" @click="confirmDockingPer">确认</button>
+        <button class="whiteBg" @click="closeDockingPerPage">取消</button>
       </div>
       <!--下面按钮 end -->
     </div>
@@ -333,6 +381,10 @@ export default {
       selectedSerPer: [], //选择的服务人员的index集合
       // selectedSerPerReal:[], //选择的服务人员item
 
+      //指定对接人员页面
+      showDockingPage:false,
+      selectedDockingPer: {}, //选择的对接人员item
+
       //修改会议物品页面
       hasChangeGood:false, //是否修改物品了
       showChangeGoodPage: false,
@@ -346,8 +398,13 @@ export default {
       selectedAddedGoodArr:[], //选中的增值物品
     };
   },
+  // watch:{
+  //   selectedDockingPer(){
+  //     console.log(this.selectedDockingPer)
+  //   }
+  // },
   computed: {
-    selectedSerPerReal() {
+    selectedSerPerReal() { //选择的服务人员
       //选择的服务人员item
       let self = this;
       let arr = this.serPerArr.filter(function(obj, index) {
@@ -676,7 +733,7 @@ export default {
           console.log(res);
           let arr = res.data.staffList;
           if (arr.length == 0) {
-            alert("当前没有服务人员");
+            alert("当前无人员可选择");
             return;
           } else {
             self.serPerArr = arr;
@@ -698,26 +755,19 @@ export default {
     confirmSerPer() {
       this.showSerPage = false;
     },
-    //最后提交服务人员
-    submitAssignSer() {
+    //ajax指派服务人员
+    submitAssignSer(callback) {
       let self = this;
-      //验证一下
-      if (this.selectedSerPer.length == 0) {
-        alert("您当前未选择服务人员");
-        return;
-      }
-
-      let result = confirm("确认指派服务人员？");
-      if (result) {
+      if(this.selectedSerPer.length>0){
         let idArr = this.selectedSerPerReal.map(function(obj) {
           return obj.id;
         });
         let postData = {
           ocid: Number(this.ocid),
-          id: idArr
+          id: idArr,
+          sertype:1,
         };
         console.log(postData);
-        Global.openLoading();
         $.post(
           Global.host + "/servicepeo/insertServiceOrder",
           postData,
@@ -725,12 +775,117 @@ export default {
             Global.closeLoading();
             console.log(res);
             if (res && Number(res) == 1) {
-              alert("指派服务人员成功");
-              self.$router.go(-1);
+              if(callback){
+                callback()
+              }
+            }else{
+              alert("指派服务人员失败")
+              return
             }
           }
         );
+      }else{
+        if(callback){
+          callback()
+        }
       }
+    },
+    //ajax指定对接人员
+    submitAssignDocking(callback){
+      let self = this;
+      if(JSON.stringify(this.selectedDockingPer)!=="{}"){
+        let idArr = []
+        idArr[0]=this.selectedDockingPer.id
+        let postData = {
+          ocid: Number(this.ocid),
+          id: idArr,
+          sertype:2,
+        }
+        console.log(postData)
+        $.ajax({
+          type: "POST",
+          url: Global.host + "/servicepeo/insertServiceOrder",
+          data: postData,
+          success: function (res) {
+            console.log(res)
+            if(res&&Number(res)==1){
+              if(callback){
+                callback()
+              }
+            }else{
+              alert("指定对接人员失败")
+              return
+            }
+          }
+        })
+      }else{
+        if(callback){
+          callback()
+        }
+      }
+    },
+    //ajax接单function
+    submitTakeOrderFunc(callback){
+      var postData = {
+        oid: Number(this.ocid),
+        otakeorder: 2, //（otakeorder状态为3）或者接单按钮（otakeorder状态为2） 数据库默认为1（未接单）
+      }
+      console.log(postData)
+      $.ajax({
+        type: "POST",
+        url: Global.host + "/order/updateServiceComplete",
+        data: postData,
+        success: function (res) {
+          console.log(res)
+          if(callback){
+            callback(res)
+          }
+        }
+      })
+    },
+    //ajax接单
+    submitTakeOrder(){
+      let self=this
+      let confirmStr=""
+      if(Number(this.dataArry[0].ocdockingstate)==2){ //不需要对接
+        if(this.selectedSerPer.length==0){
+          confirmStr="当前未选择服务人员，确认提交？"
+        }
+      }else if(Number(this.dataArry[0].ocdockingstate)==1){ //需要对接
+        if(this.selectedSerPer.length==0&&JSON.stringify(this.selectedDockingPer)=="{}"){ //服务人员和对接人员 都没选择
+          confirmStr="当前未选择服务人员和对接人员，确认提交？"
+        }else if(this.selectedSerPer.length==0){ //没选服务人员，选了对接人员
+          confirmStr="当前未选择服务人员，确认提交？"
+        }else if(JSON.stringify(this.selectedDockingPer)=="{}"){ //选了服务人员，没选对接人员
+          confirmStr="当前未选择对接人员，确认提交？"
+        }
+      }
+      if(confirmStr!==""){
+        var result=confirm(confirmStr)
+        if(!result){
+          return
+        }
+      }
+
+      //ajax 先指派服务人员 再指定对接人员 再接单
+      // Global.openLoading()
+      console.log("开始ajax")
+      $("#submitTakeOrderBtn").addClass("eventsDisabled")
+      this.submitAssignSer(function(){
+        self.submitAssignDocking(function(){
+          self.submitTakeOrderFunc(function(res){
+            // Global.closeLoading()
+            $("#submitTakeOrderBtn").removeClass("eventsDisabled")
+            console.log(res)
+            if(res&&Number(res)==1){
+              alert("接单成功")
+              self.$router.go(-1);
+            }else{
+              alert("操作失败")
+            }
+          })
+        })
+      })
     },
 
     //修改会议物品页面-------------------------------------------------
@@ -889,6 +1044,27 @@ export default {
       if(item.mNum==0){
         item.mNum=1
       }
+    },
+    //指定对接人员---------------------------
+    //打开对接人员选择页面
+    goAssignDocking(){
+      let self=this
+      if(this.serPerArr.length==0){
+        this.getSerPerArr(function(){
+          self.showDockingPage=true
+        })
+      }else{
+        this.showDockingPage=true
+      }
+    },
+    //点击对接人员页面确定
+    confirmDockingPer(){
+      this.showDockingPage=false
+    },
+    //点击对接人员页面取消
+    closeDockingPerPage(){
+      this.selectedDockingPer={}
+      this.showDockingPage=false
     }
   } //methods end
 };
@@ -901,7 +1077,7 @@ export default {
 @import "../assets/css/mdetail.css";
 @import "../assets/css/mindex_goods.css";
 
-/* 为了下面的按钮不fixed */
+/* 为了下面的按钮不fixed 解决问题：服务人员被按钮挡住，需要滚动才能显示 */
 .upContentWrap{
   min-height: calc(100% - 51px);
 }
