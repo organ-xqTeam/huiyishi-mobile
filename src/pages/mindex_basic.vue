@@ -1,11 +1,11 @@
 <template>
   <div class="mindexBasic-page">
     <div class="basic">
-      <div class="basic_title mindex_top ac">会议预定信息</div>
+      <div class="basic_title mindex_top ac">预定信息</div>
       <div class="mindex_top table_top">
         <table class="mindex_table">
           <tr style="border-top: none;">
-            <td class="table_name">会议主题</td>
+            <td class="table_name">主题</td>
             <td><input class="mindex_input" type="text" name="" v-model="title"></td>
           </tr>
           <tr>
@@ -17,7 +17,7 @@
             <td><input class="mindex_input" type="number" name="" v-model="ocnum"></td>
           </tr>
           <tr>
-            <td class="table_name">会议时间</td>
+            <td class="table_name">时间</td>
             <td><input class="mindex_input" type="type" name="" v-model="time" readonly="readonly"></td>
           </tr>
           <!-- 重复 -->
@@ -56,7 +56,7 @@
           </tr>
           <!-- 重复 end -->
           <tr>
-            <td class="table_name">会议预定联系人</td>
+            <td class="table_name">预定联系人</td>
             <td><input class="mindex_input" type="text" name="" v-model="ocreservename"></td>
           </tr>
           <tr>
@@ -64,7 +64,7 @@
             <td><input class="mindex_input" type="number" name="" v-model="ocreservephone"></td>
           </tr>
           <tr>
-            <td class="table_name">会议使用联系人</td>
+            <td class="table_name">使用联系人</td>
             <td><input class="mindex_input" type="text" name="" v-model="ocusename"></td>
           </tr>
           <tr>
@@ -75,12 +75,12 @@
       </div>
     </div>
     <div>
-      <button class="add_info toSupply" @click="openSupply">填写会议补充信息</button>
+      <button class="add_info toSupply" @click="openSupply">填写补充信息</button>
     </div>
     <div class="add_goods">
-      <button class="cancle toGoods basicBtn" @click="openBasicGood">添加基础会议物品</button>
+      <button class="cancle toGoods basicBtn" @click="openBasicGood">添加基础物品</button>
       <div style="width: 20px;"></div>
-      <button class="cancle toGoods addedBtn" @click="openAddedGood">添加增值会议物品</button>
+      <button class="cancle toGoods addedBtn" @click="openAddedGood">添加增值物品</button>
     </div>
     <!--提交按钮-->
     <div class="kong"></div>
@@ -91,7 +91,7 @@
 
     <!-- 补充信息 ///////////////////////////////////////////////////////////////////////////////////////////////// -->
     <div class="basic supplyBasic" v-cloak v-show="showSupply">
-      <div class="basic_title mindex_top ac">会议补充信息</div>
+      <div class="basic_title mindex_top ac">补充信息</div>
       <!-- 会议补充信息 -->
       <div class="mindex_top table_top">
         <table class="mindex_table">
@@ -107,7 +107,7 @@
             </td>
           </tr>
           <tr>
-            <td class="table_name">是否与服务人员对接</td>
+            <td class="table_name">是否对接</td>
             <td style="width:50%;">
               <label style="font-weight:normal;">
                 <input class="table_radio" type="radio" name="ocdockingstate" value="1" v-model="ocdockingstate">是
@@ -119,7 +119,7 @@
           </tr>
           <tr v-cloak v-show="ocdockingstate==1">
             <td class="table_name">对接时间</td>
-            <td><input class="mindex_input form-control" id='datetime' type="type" name=""></td>
+            <td><input class="mindex_input form-control" id='datetime' type="type" name="" readonly="readonly"></td>
           </tr>
           <!-- <tr>
 			<td class="table_name">会议使用联系人</td>
@@ -163,7 +163,7 @@
       <!-- 会议布展情况 -->
       <div class="mindex_top table_top basic">
         <table class="mindex_table">
-          <caption class="table_title">会议布展情况</caption>
+          <caption class="table_title">布展情况</caption>
           <tr style="border-top: none;">
             <td class="table_name">展台</td>
             <td>
@@ -221,7 +221,7 @@
     <!-- 添加基础物品 -->
     <div class="basicGood-page" v-cloak v-show="showBasicPage">
       <!--标题-->
-      <div class="tit">基础会议物品</div>
+      <div class="tit">基础物品</div>
       <!--图片内容-->
       <div class="dishes">
         <template v-cloak v-if="basicGoodArr.length>0">
@@ -262,7 +262,7 @@
     <!-- 添加增值物品 -->
     <div class="addedGood-page" v-cloak v-show="showAddedPage">
       <!--标题-->
-      <div class="tit">增值会议物品</div>
+      <div class="tit">增值物品</div>
       <!--图片内容-->
       <div class="dishes">
         <template v-cloak v-if="addedGoodArr.length>0">
@@ -333,7 +333,7 @@
         taixingArr: [],
         //补充信息form表单
         cid: "不限", //台型
-        ocdockingstate: "", //是否与服务人员对接
+        ocdockingstate: 2, //是否与服务人员对接
         stringocdockingtime: "", //对接时间
         ocbigcarnum: "", //大车位数目
         ocsmallnum: "", //小车位数目
@@ -380,9 +380,9 @@
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
       },
-      ocdockingstate() {
-        this.initSome()
-      },
+      // ocdockingstate() {
+      //   this.initSome()
+      // },
       selectedBasicGoodArr(){
         console.log(this.selectedBasicGoodArr)
       }
@@ -397,15 +397,11 @@
     methods: {
       initSome() {
         $("#datetime").datetimepicker({
-          format: "yyyy-mm-dd ",
+          format: "yyyy-mm-dd hh:ii",
           autoclose: true,
-          todayBtn: true,
           todayHighlight: true,
-          showMeridian: true,
           pickerPosition: "bottom-right",
           language: "zh-CN", //中文，需要引用zh-CN.js包
-          startView: 2, //月视图
-          minView: 2 //日期时间选择器所能够提供的最精确的时间选择视图
         });
       },
       //返回上一个路由
@@ -475,10 +471,9 @@
               let arr = res.data
               console.log(arr) //台型数组
               self.taixingArr = arr
-
-              if(callback){
-                callback()
-              }
+            }
+            if(callback){
+              callback()
             }
           })
           .catch(function (res) {

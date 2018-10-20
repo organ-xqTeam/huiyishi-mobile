@@ -1,153 +1,146 @@
 <template>
-  <div vlass="warp_main">
-    <div class="basic">
-      <div class="basic_title mindex_top ac">会议预定信息</div>
-      <div class="mindex_top table_top">
-        <table class="mindex_table">
-          <tr style="border-top: none;">
-            <td class="table_name">会议主题</td>
-            <td><input class="mindex_input" type="text" name="" v-model="ocsourcename" readonly="readonly"></td>
-          </tr>
-          <tr>
-            <td class="table_name">会议室名称</td>
-            <td><input class="mindex_input" type="text" name="" v-model="rname" readonly="readonly"></td>
-          </tr>
-          <tr>
-            <td class="table_name">参会人数</td>
-            <td><input class="mindex_input" type="number" name="" v-model="ocnum" readonly="readonly"></td>
-          </tr>
-          <tr>
-            <td class="table_name">会议时间</td>
-            <td>
-              <input class="mindex_input form-control" id='datetime' type="type" name="" v-model="time" readonly="readonly"
-                style="background-color:#fff;border:none;outline:none;box-shadow:none;padding-left:0;color:#000;">
-            </td>
-          </tr>
-          <!-- 重复 -->
-          <!-- <tr>
-            <td class="table_name">是否重复预定</td>
-            <td>
-              <template v-cloak v-if="ocdockingstate==1">
-                是
-              </template>
-              <template v-cloak v-else>
-                否
-              </template>
-            </td>
-          </tr>
-
-          <template v-cloak v-if="ocdockingstate==1">
+  <div class="warp_main">
+    <div class="upContentWrap">
+      <div class="basic" style="margin-top:0;">
+        <div class="basic_title mindex_top ac">预定信息</div>
+        <div class="mindex_top table_top">
+          <table class="mindex_table">
+            <tr style="border-top: none;">
+              <td class="table_name">主题</td>
+              <td><input class="mindex_input" type="text" name="" v-model="ocsourcename" readonly="readonly"></td>
+            </tr>
             <tr>
-              <td class="table_name">重复预定类型</td>
+              <td class="table_name">会议室名称</td>
+              <td><input class="mindex_input" type="text" name="" v-model="rname" readonly="readonly"></td>
+            </tr>
+            <tr>
+              <td class="table_name">参会人数</td>
+              <td><input class="mindex_input" type="number" name="" v-model="ocnum" readonly="readonly"></td>
+            </tr>
+            <tr>
+              <td class="table_name">会议时间</td>
               <td>
-                <select class="mindex_input">
-                  <option>每天</option>
-                  <option>每周</option>
-                  <option>每月</option>
-                </select>
+                <input class="mindex_input form-control" id='datetime' type="type" name="" v-model="time" readonly="readonly" style="background-color:#fff;border:none;outline:none;box-shadow:none;padding-left:0;color:#000;">
               </td>
             </tr>
+            <!-- 重复 -->
+            <!-- <tr>
+              <td class="table_name">是否重复预定</td>
+              <td>
+                <template v-cloak v-if="ocdockingstate==1">
+                  是
+                </template>
+                <template v-cloak v-else>
+                  否
+                </template>
+              </td>
+            </tr>
+
+            <template v-cloak v-if="ocdockingstate==1">
+              <tr>
+                <td class="table_name">重复预定类型</td>
+                <td>
+                  <select class="mindex_input">
+                    <option>每天</option>
+                    <option>每周</option>
+                    <option>每月</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td class="table_name">重复次数</td>
+                <td><input class="mindex_input" type="number" name=""></td>
+              </tr>
+              <tr>
+                <td class="table_name">重复日期</td>
+                <td><input class="mindex_input" type="text" name=""></td>
+              </tr>
+              <tr>
+                <td class="table_name">结束重复日期</td>
+                <td><input class="mindex_input" type="text" name=""></td>
+              </tr>
+            </template> -->
+            <!-- 重复 end -->
             <tr>
-              <td class="table_name">重复次数</td>
-              <td><input class="mindex_input" type="number" name=""></td>
+              <td class="table_name">预定联系人</td>
+              <td><input class="mindex_input" type="text" name="" v-model="ocreservename" readonly="readonly"></td>
             </tr>
             <tr>
-              <td class="table_name">重复日期</td>
-              <td><input class="mindex_input" type="text" name=""></td>
+              <td class="table_name">联系电话</td>
+              <td><input class="mindex_input" type="number" name="" v-model="ocreservephone" readonly="readonly"></td>
             </tr>
             <tr>
-              <td class="table_name">结束重复日期</td>
-              <td><input class="mindex_input" type="text" name=""></td>
+              <td class="table_name">使用联系人</td>
+              <td><input class="mindex_input" type="text" name="" v-model="ocusename" readonly="readonly"></td>
             </tr>
-          </template> -->
-          <!-- 重复 end -->
-          <tr>
-            <td class="table_name">会议预定联系人</td>
-            <td><input class="mindex_input" type="text" name="" v-model="ocreservename" readonly="readonly"></td>
-          </tr>
-          <tr>
-            <td class="table_name">联系电话</td>
-            <td><input class="mindex_input" type="number" name="" v-model="ocreservephone" readonly="readonly"></td>
-          </tr>
-          <tr>
-            <td class="table_name">会议使用联系人</td>
-            <td><input class="mindex_input" type="text" name="" v-model="ocusename" readonly="readonly"></td>
-          </tr>
-          <tr>
-            <td class="table_name">联系电话</td>
-            <td><input class="mindex_input" type="number" name="" v-model="ocusephone" readonly="readonly"></td>
-          </tr>
-        </table>
+            <tr>
+              <td class="table_name">联系电话</td>
+              <td><input class="mindex_input" type="number" name="" v-model="ocusephone" readonly="readonly"></td>
+            </tr>
+          </table>
+        </div>
       </div>
-    </div>
-    <div>
-      <router-link :to="{path:'/memberlist/morderContent/base/supply',query:{ocid:this.ocid} }">
-        <button class="add_info toSupply blueBg"
-                style="color:#fff;height:47px;border-radius:0px;">查看会议补充信息</button>
-      </router-link>
-    </div>
-    <template v-cloak v-if="bg.length>0">
-      <div class="look_goods" style="margin-top:0;">
-        <div class="look_title ac" style="font-size:1.3em;">基础会议物品</div>
+      <div>
+        <router-link :to="{path:'/memberlist/morderContent/base/supply',query:{ocid:this.ocid} }">
+          <button class="add_info toSupply blueBg" style="color:#fff;height:47px;border-radius:6px;margin-top:20px;">查看补充信息</button>
+        </router-link>
+      </div>
+      <template v-cloak v-if="bg.length>0">
+        <div class="look_goods" style="margin-top:0;">
+          <div class="look_title ac" style="font-size:1.3em;">基础物品</div>
           <ul class="look_ul">
-            <li v-for="(item,index) in bg" :key="index">{{item.boname}} <span>{{item.bonum}}</span></li>
+            <li v-for="(item,index) in bg" :key="index">{{item.bgname}} * <span>{{item.mNum}}</span></li>
           </ul>
-      </div>
-    </template>
-    <template v-cloak v-if="ag.length>0">
-      <div class="look_goods">
-        <div class="look_title ac" style="font-size:1.3em;">增值会议物品</div>
-        <ul class="look_ul">
-          <li v-for="(item,index) in ag" :key="index">{{item.aoname}} <span>{{item.aonum}}</span></li>
-        </ul>
-      </div>
-    </template>
+        </div>
+      </template>
+      <template v-cloak v-if="ag.length>0">
+        <div class="look_goods">
+          <div class="look_title ac" style="font-size:1.3em;">增值物品</div>
+          <ul class="look_ul">
+            <li v-for="(item,index) in ag" :key="index">{{item.agname}} * <span>{{item.mNum}}</span></li>
+          </ul>
+        </div>
+      </template>
 
-    <!-- 指派服务人员 -->
-    <template v-cloak v-if="Number(queryInfo.otakeorder)==1">
-      <div class="look_goods blueBg" @click="goAssignSer">
-        <div class="look_title ac" style="font-size:1.3em;">指派服务人员</div>
-        <!-- <ul class="look_ul">
-          <li v-for="(item,index) in ag" :key="index">{{item.aoname}} <span>{{item.aonum}}</span></li>
-        </ul> -->
-      </div>
-      <!-- 展示选择的服务人员 -->
-      <div class="serPerWrap" style="width:88%;margin:0 auto;">
-        <label class="serPerItem" style="text-indent:1em;"
-              v-for="(item,index) in selectedSerPerReal" :key="index">{{item.name}}</label>
-      </div>
-    </template>
+      <!-- 指派服务人员 -->
+      <template v-cloak v-if="Number(queryInfo.otakeorder)==1&&queryInfo.fromPage&&queryInfo.fromPage=='service'&&Number(queryInfo.orderstate)!==0">
+        <div class="look_goods blueBg" style="border-radius:6px;" @click="goAssignSer">
+          <div class="look_title ac" style="font-size:1.3em;">指派服务人员</div>
+          <!-- <ul class="look_ul">
+            <li v-for="(item,index) in ag" :key="index">{{item.aoname}} <span>{{item.aonum}}</span></li>
+          </ul> -->
+        </div>
+        <!-- 展示选择的服务人员 -->
+        <div class="serPerWrap" style="width:88%;margin:0 auto;">
+          <label class="serPerItem" style="text-indent:1em;" v-for="(item,index) in selectedSerPerReal" :key="index">{{item.name}}</label>
+        </div>
+      </template>
 
-    <div class="kong"></div>
+      <div class="kong"></div>
+    </div>
 
     <!--下面按钮-->
-    <div class="button_btn">
+    <div class="button_btn" style="position:static;">
       <!-- 普通用户 -->
       <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='member'">
-        <button class="blueBg"
-                v-cloak v-if="Number(queryInfo.otakeorder)==3&&dataArry[3]==null"
-                @click="goComment">评价</button>
-        <button class="blueBg" v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0"
-                @click="goCancleTan">取消预定</button>
+        <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==3&&dataArry[3]==null" @click="goComment">评价</button>
+        <button class="blueBg" v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0" @click="goCancleTan">取消预定</button>
       </template>
       <!-- 审批部门 -->
-      <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='approve'">
-        <button class="whiteBg" id="realPassBtn"
-                v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0"
-                @click="passCheck">通过</button>
-        <button class="blueBg"
-                v-cloak v-if="Number(queryInfo.opassstate)==3&&Number(queryInfo.orderstate)!==0"
-                @click="openRepulse">拒绝</button>
+      <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='approve'&&Number(queryInfo.orderstate)!==0">
+        <button class="whiteBg" id="realPassBtn" v-cloak v-if="Number(queryInfo.opassstate)==3" @click="passCheck">通过</button>
+        <button class="blueBg" v-cloak v-if="Number(queryInfo.opassstate)==3" @click="openRepulse">拒绝</button>
       </template>
       <!-- 服务部门 -->
       <!-- otakeorder 1未接单 2服务中 3已完成 -->
       <!-- otakeorder 服务状态(1.未接单 2.服务中3.服务完成  默认为1 ) -->
       <!-- orderstate;//订单状态(0.以取消 1.未取消  2.已完成   数据库默认未取消为1) -->
-      <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='service'">
-        <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==1"
-                @click="submitAssignSer">提交</button>
-        <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==3"
-                @click="goCancleTan">修改会议物品</button>
+      <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='service'&&Number(queryInfo.orderstate)!==0">
+        <button class="blueBg" v-cloak v-if="Number(queryInfo.otakeorder)==1" @click="submitAssignSer">提交</button>
+        <template v-cloak v-if="Number(queryInfo.otakeorder)==3">
+          <button class="whiteBg" @click="openGoodPage">修改物品</button>
+          <button class="blueBg" id="submitChangeGood" @click="submitChangeGood">确认</button>
+        </template>
       </template>
 
       <button class="whiteBg" @click="routerGoback">返回</button>
@@ -215,16 +208,94 @@
       </div>
       <!--下面按钮 end -->
     </div>
+    <!-- 修改会议物品页面 /////////////////////////////////////////////////////////////////////////////////////// -->
+    <div class="changeGood-page" v-cloak v-show="showChangeGoodPage&&basicLoaded&&addedLoaded">
+      <div class="basic_title mindex_top ac" style="margin-bottom:5px;">修改物品</div>
+
+      <h3 class="addGoodTitle">基础物品</h3>
+      <div class="serPerWrap">
+        <!-- <div class="goodItem" v-for="(item,index) in basicGoodArr" :key="index">
+          <label class="serPerItem">
+            <input type="checkbox" :value="index" v-model="selectedBasicIndex">
+            <span>{{item.bgname}}</span>
+          </label>
+          <div>
+            <span>-</span><input type="number" class="numInput"><span>+</span>
+          </div>
+        </div> -->
+
+        <div class="dishes_item" v-for="(item,index) in basicGoodArr" :key="index">
+          <img class="dishes_img" v-cloak v-if="item.bgpic&&item.bgpic!==''" :src="item.bgpic">
+          <div class="dishes_text">
+            <p class="dishes_text_name">{{item.bgname}}</p>
+            <div class="item_text_num ac">
+              <span class="num_add" @click="plusGood(item)">+</span>
+              <input type="number" name="" v-model="item.mNum">
+              <span class="num_minus" @click="minusGood(item)">-</span>
+            </div>
+          </div>
+          <input class="dishes_check" type="checkbox" name="" :value="item" v-model="selectedBasicGoodArr">
+        </div>
+
+      </div>
+
+      <h3 class="addGoodTitle">增值物品</h3>
+      <div class="serPerWrap">
+        <!-- <div class="goodItem" v-for="(item,index) in basicGoodArr" :key="index">
+          <label class="serPerItem">
+            <input type="checkbox" :value="index" v-model="selectedBasicIndex">
+            <span>{{item.bgname}}</span>
+          </label>
+          <div>
+            <span>-</span><input type="number" class="numInput"><span>+</span>
+          </div>
+        </div> -->
+
+        <div class="dishes_item" v-for="(item,index) in addedGoodArr" :key="index">
+          <img class="dishes_img" v-cloak v-if="item.agpic&&item.agpic!==''" :src="item.agpic">
+          <div class="dishes_text">
+            <p class="dishes_text_name">{{item.agname}} <span style="color:red;">￥{{item.agprice}}</span></p>
+            <div class="item_text_num ac">
+              <span class="num_add" @click="plusGood(item)">+</span>
+              <input type="number" name="" v-model="item.mNum">
+              <span class="num_minus" @click="minusGood(item)">-</span>
+            </div>
+          </div>
+          <input class="dishes_check" type="checkbox" name="" :value="item" v-model="selectedAddedGoodArr">
+        </div>
+      </div>
+
+      <!--选中的菜品-基础-->
+      <div class="select_dishes clearfix" v-cloak v-if="selectedBasicGoodArr.length>0">
+        <div class="select_dishes_item" v-for="(item,index) in selectedBasicGoodArr" :key="index">
+          {{item.bgname}} * {{item.mNum==0?1:item.mNum}}
+        </div>
+      </div>
+      <!--选中的菜品-增值-->
+      <div class="select_dishes clearfix" v-cloak v-if="selectedAddedGoodArr.length>0">
+        <div class="select_dishes_item" v-for="(item,index) in selectedAddedGoodArr" :key="index">
+          {{item.agname}} * {{item.mNum==0?1:item.mNum}}
+        </div>
+      </div>
+
+      <!--下面按钮-->
+      <div class="button_btn">
+        <button class="blueBg" @click="confirmGood">确认</button>
+        <button class="whiteBg" @click="closeGoodPage">取消</button>
+      </div>
+      <!--下面按钮 end -->
+    </div>
 
   </div>
 </template>
 
 <script>
+//----------------------------------------------------------------------
 export default {
   name: "morderContentBase",
   data() {
     return {
-      queryInfo:{}, //页面传值item
+      queryInfo: {}, //页面传值item
 
       ocid: 0,
       oid: 0,
@@ -256,33 +327,45 @@ export default {
       opassstate: 3, //假设为3，该值是有上一个页面传来
       repulseContent: "", //拒绝原因
 
-
       //指派服务人员页面
-      showSerPage:false,
-      serPerArr:[],
-      selectedSerPer:[], //选择的服务人员的index集合
+      showSerPage: false,
+      serPerArr: [],
+      selectedSerPer: [], //选择的服务人员的index集合
       // selectedSerPerReal:[], //选择的服务人员item
-    }
+
+      //修改会议物品页面
+      hasChangeGood:false, //是否修改物品了
+      showChangeGoodPage: false,
+      basicGoodArr: [],
+      addedGoodArr: [],
+      basicLoaded: false,
+      addedLoaded: false,
+      selectedBasicIndex: [], //目前没用
+      selectedAddedIndex: [], //目前没用
+      selectedBasicGoodArr:[], //选中的基础物品
+      selectedAddedGoodArr:[], //选中的增值物品
+    };
   },
-  computed:{
-    selectedSerPerReal(){ //选择的服务人员item
-      let self=this
-      let arr=this.serPerArr.filter(function(obj,index){
-        return self.selectedSerPer.indexOf(index)>-1
-      })
-      return arr
+  computed: {
+    selectedSerPerReal() {
+      //选择的服务人员item
+      let self = this;
+      let arr = this.serPerArr.filter(function(obj, index) {
+        return self.selectedSerPer.indexOf(index) > -1;
+      });
+      return arr;
     }
   },
   mounted() {
-    this.getPageInfo()
+    this.getPageInfo();
     this.initDo();
   },
   methods: {
     //页面传值获取数据
-    getPageInfo(){
-      let item=this.$route.query.item;
-      console.log(item)
-      this.queryInfo=item
+    getPageInfo() {
+      let item = this.$route.query.item;
+      console.log(item);
+      this.queryInfo = item;
     },
     //页面加载
     initDo() {
@@ -292,11 +375,11 @@ export default {
       let postData = {
         ocid: ocidData
       };
-      Global.openLoading()
+      Global.openLoading();
       this.axios
         .post(Global.host + "/order/selectOneInfo", this.qs.stringify(postData))
         .then(function(res) {
-          Global.closeLoading()
+          Global.closeLoading();
           console.log(res);
           self.dataArry = res.data;
           console.log(self.dataArry);
@@ -316,7 +399,6 @@ export default {
           //重复？？？
           // self.ocdockingstate = Number(baseInfo.ocdockingstate);
 
-
           let beginTime = baseInfo.ocbegintime;
           let endTime = baseInfo.ocendtime;
           let kaishi = Global.dateToFormat(new Date(beginTime));
@@ -324,10 +406,21 @@ export default {
           let jieshuReal = jieshu.substr(11, jieshu.length);
           self.time = kaishi + "-" + jieshuReal;
 
-          /*增值物品信息列表*/
-          self.ag = self.dataArry[2];
+
           /*基础物品信息列表*/
-          self.bg = self.dataArry[1];
+          self.bg = self.dataArry[1].map(function(obj){
+            obj.bgname=obj.boname
+            obj.mNum=obj.bonum
+            return obj
+          })
+          /*增值物品信息列表*/
+          self.ag = self.dataArry[2].map(function(obj){
+            obj.agname=obj.aoname
+            obj.mNum=obj.aonum
+            obj.agprice=obj.aoprice
+            return obj
+          })
+
 
           self.rid = baseInfo.rid;
           /*用户权限控制*/
@@ -378,8 +471,8 @@ export default {
               break;
           }
         })
-        .catch(function(res){
-          Global.closeLoading()
+        .catch(function(res) {
+          Global.closeLoading();
         });
     },
     goComment() {
@@ -402,28 +495,28 @@ export default {
     goCancle() {
       let self = this;
       //先验证一下
-      if(this.cancleContent.trim()==""){
-        alert("请输入取消原因")
-        return
+      if (this.cancleContent.trim() == "") {
+        alert("请输入取消原因");
+        return;
       }
 
-      let result=confirm("确定取消该订单？")
-      if(!result){
-        return
+      let result = confirm("确定取消该订单？");
+      if (!result) {
+        return;
       }
       let postData = {
         ocid: self.ocid,
         cancleContent: self.cancleContent
       };
       console.log(postData);
-      $("#realCancelBtn").addClass("eventsDisabled")
+      $("#realCancelBtn").addClass("eventsDisabled");
       $.ajax({
         type: "POST",
         url: "/order/memberUpdateOrder",
         data: postData,
         success: function(res) {
-          $("#realCancelBtn").removeClass("eventsDisabled")
-          console.log(res)
+          $("#realCancelBtn").removeClass("eventsDisabled");
+          console.log(res);
           if (Number(res) == 1) {
             alert("操作成功");
             $("#mySearch").modal("hide");
@@ -436,10 +529,10 @@ export default {
       });
     },
     passCheck() {
-      let self=this
-      let result=confirm("确定通过该订单？")
-      if(!result){
-        return
+      let self = this;
+      let result = confirm("确定通过该订单？");
+      if (!result) {
+        return;
       }
       //取出oid
       let oid = this.oid;
@@ -448,14 +541,14 @@ export default {
         oid: oid,
         pass: pass
       };
-      console.log(postData)
-      $("#realPassBtn").addClass("eventsDisabled")
+      console.log(postData);
+      $("#realPassBtn").addClass("eventsDisabled");
       $.ajax({
         type: "POST",
         url: "/order/approveOrder",
         data: postData,
         success: function(res) {
-          $("#realPassBtn").removeClass("eventsDisabled")
+          $("#realPassBtn").removeClass("eventsDisabled");
           //console.log(res)
           if (Number(res) == 1) {
             alert("操作成功");
@@ -472,16 +565,16 @@ export default {
       $("#repulse").modal("show");
     },
     goRepulse() {
-      let self=this
+      let self = this;
       // 先验证一下
-      if(this.repulseContent.trim()==""){
-        alert("请输入拒绝原因")
-        return
+      if (this.repulseContent.trim() == "") {
+        alert("请输入拒绝原因");
+        return;
       }
 
-      let result=confirm("确定拒绝该订单？")
-      if(!result){
-        return
+      let result = confirm("确定拒绝该订单？");
+      if (!result) {
+        return;
       }
       //取出oid
       let oid = this.oid;
@@ -492,13 +585,13 @@ export default {
         pass: pass,
         message: message
       };
-      $("#realRepulseBtn").addClass("eventsDisabled")
+      $("#realRepulseBtn").addClass("eventsDisabled");
       $.ajax({
         type: "POST",
         url: "/order/approveOrder",
         data: postData,
         success: function(res) {
-          $("#realRepulseBtn").removeClass("eventsDisabled")
+          $("#realRepulseBtn").removeClass("eventsDisabled");
           //console.log(res)
           if (Number(res) == 1) {
             alert("操作成功");
@@ -557,85 +650,247 @@ export default {
           break;
       }
     },
-    routerGoback(){
+    routerGoback() {
       //返回上一个路由
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     //去指派人员页面
-    goAssignSer(){
-      let self=this
-      if(this.serPerArr.length==0){
-        this.getSerPerArr(function(){
-          self.showSerPage=true
-        })
-      }else{
-        this.showSerPage=true
+    goAssignSer() {
+      let self = this;
+      if (this.serPerArr.length == 0) {
+        this.getSerPerArr(function() {
+          self.showSerPage = true;
+        });
+      } else {
+        this.showSerPage = true;
       }
     },
     //获取服务人员名单
-    getSerPerArr(callback){
+    getSerPerArr(callback) {
       let self = this;
-      Global.openLoading()
+      Global.openLoading();
       this.axios
         .get(Global.host + "/servicepeo/selectServicepeoByOther")
         .then(function(res) {
-          Global.closeLoading()
-          console.log(res)
-          let arr=res.data.staffList
-          if(arr.length==0){
-            alert("当前没有服务人员")
-            return
-          }else{
-            self.serPerArr=arr
-            if(callback){
-              callback()
+          Global.closeLoading();
+          console.log(res);
+          let arr = res.data.staffList;
+          if (arr.length == 0) {
+            alert("当前没有服务人员");
+            return;
+          } else {
+            self.serPerArr = arr;
+            if (callback) {
+              callback();
             }
           }
         })
-        .catch(function(res){
-          Global.closeLoading()
+        .catch(function(res) {
+          Global.closeLoading();
         });
     },
     //关闭指派服务人员页面 并删除已选择的服务人员
-    closeSerPerPage(){
-      this.selectedSerPer=[]
-      this.showSerPage=false
+    closeSerPerPage() {
+      this.selectedSerPer = [];
+      this.showSerPage = false;
     },
     //指派服务人员-确认
-    confirmSerPer(){
-      this.showSerPage=false
+    confirmSerPer() {
+      this.showSerPage = false;
     },
     //最后提交服务人员
-    submitAssignSer(){
-      let self = this
+    submitAssignSer() {
+      let self = this;
       //验证一下
-      if(this.selectedSerPer.length==0){
-        alert("您当前未选择服务人员")
-        return
+      if (this.selectedSerPer.length == 0) {
+        alert("您当前未选择服务人员");
+        return;
       }
 
-      let result=confirm("确认指派服务人员？")
-      if(result){
-        let idArr=this.selectedSerPerReal.map(function(obj){
-          return obj.id
-        })
+      let result = confirm("确认指派服务人员？");
+      if (result) {
+        let idArr = this.selectedSerPerReal.map(function(obj) {
+          return obj.id;
+        });
         let postData = {
-					ocid: Number(this.ocid),
-					id: idArr,
-				}
-        console.log(postData)
-        Global.openLoading()
-        $.post(Global.host + "/servicepeo/insertServiceOrder",postData,function(res){
-          Global.closeLoading()
-          console.log(res)
-          if(res&&Number(res)==1){
-            alert("指派服务人员成功")
-            self.$router.go(-1)
+          ocid: Number(this.ocid),
+          id: idArr
+        };
+        console.log(postData);
+        Global.openLoading();
+        $.post(
+          Global.host + "/servicepeo/insertServiceOrder",
+          postData,
+          function(res) {
+            Global.closeLoading();
+            console.log(res);
+            if (res && Number(res) == 1) {
+              alert("指派服务人员成功");
+              self.$router.go(-1);
+            }
           }
-        })
+        );
       }
     },
-  }, //methods end
+
+    //修改会议物品页面-------------------------------------------------
+    //打开修改物品页面
+    openGoodPage() {
+      if (!this.basicLoaded) {
+        this.getBasicGoodArr();
+      }
+      if (!this.addedLoaded) {
+        this.getAddedGoodArr();
+      }
+      this.showChangeGoodPage = true;
+    },
+    //获取基础物品
+    getBasicGoodArr() {
+      let self = this;
+      Global.openLoading();
+      this.axios
+        .get(Global.host + "/order/selectBgList")
+        .then(function(res) {
+          self.basicLoaded = true;
+          if (self.basicLoaded && self.addedLoaded) {
+            Global.closeLoading();
+          }
+          console.log(res);
+          self.basicGoodArr = res.data.map(function(obj){
+            obj.mNum=1
+            return obj
+          });
+        })
+        .catch(function(res) {
+          console.log(res);
+        });
+    },
+    //获取增值物品
+    getAddedGoodArr() {
+      let self = this;
+      Global.openLoading();
+      this.axios
+        .get(Global.host + "/order/selectAgList")
+        .then(function(res) {
+          self.addedLoaded = true;
+          if (self.basicLoaded && self.addedLoaded) {
+            Global.closeLoading();
+          }
+          console.log(res);
+          self.addedGoodArr = res.data.map(function(obj){
+            obj.mNum=1
+            return obj
+          })
+        })
+        .catch(function(res) {
+          console.log(res);
+        });
+    },
+    //关闭修改物品页面
+    closeGoodPage() {
+      // //清空
+      // this.selectedBasicGoodArr=[]
+      // this.selectedAddedGoodArr=[]
+
+      this.showChangeGoodPage = false;
+    },
+    //最后提交修改物品
+    confirmGood() {
+      //（查订单回来的叫boname，查物品回来的叫bgname）
+      this.bg=this.selectedBasicGoodArr
+      this.ag=this.selectedAddedGoodArr
+
+      this.hasChangeGood=true
+      this.showChangeGoodPage=false
+    },
+    //最后点击确定 ajax修改物品
+    submitChangeGood(){
+      let self=this
+      if(!this.hasChangeGood){
+        return
+      }
+      let result=confirm("确认修改物品")
+      if(!result){
+        return
+      }
+      //基础物品
+      let bonameArr
+      let bonumArr
+      if(this.selectedBasicGoodArr.length==0){
+        bonameArr=null
+        bonumArr=null
+      }else{
+        bonameArr=this.selectedBasicGoodArr.map(function(obj){
+          return obj.bgname
+        })
+        bonumArr=this.selectedBasicGoodArr.map(function(obj){
+          return obj.mNum
+        })
+      }
+      //增值物品
+      let aonameArr
+      let aonumArr
+      let aopriceArr
+      if(this.selectedAddedGoodArr.length==0){
+        aonameArr=null
+        aonumArr=null
+        aopriceArr=null
+      }else{
+        aonameArr=this.selectedAddedGoodArr.map(function(obj){
+          return obj.agname
+        })
+        aonumArr=this.selectedAddedGoodArr.map(function(obj){
+          return obj.mNum
+        })
+        aopriceArr=this.selectedAddedGoodArr.map(function(obj){
+          return obj.agprice
+        })
+      }
+
+      let postData={
+        ocid:this.ocid,
+
+        boname:bonameArr,
+        bonum:bonumArr,
+
+        aoname:aonameArr,
+        aonum:aonumArr,
+        aoprice:aopriceArr,
+      }
+      console.log(postData)
+      $("#submitChangeGood").addClass("eventsDisabled")
+      this.axios.post(Global.host+'/order/updateGoodsOrder',this.qs.stringify(postData))
+      .then(function(res){
+        $("#submitChangeGood").removeClass("eventsDisabled")
+        console.log(res)
+        if(res&&Number(res)==1){
+          alert("操作成功")
+          self.$router.go(-1);
+          // self.$router.push({
+          //     path:"/mindex/mindexBook/mindexBasic",
+          //     query:{
+          //       data:self.$data
+          //     }
+          // })
+        }
+      })
+      .catch(function(res){
+        $("#submitChangeGood").removeClass("eventsDisabled")
+        console.log(res)
+      })
+    },
+    //点击加号
+    plusGood(item){
+      item.mNum++
+    },
+    //点击减号
+    minusGood(item){
+      item.mNum--
+      if(item.mNum==0){
+        item.mNum=1
+      }
+    }
+  } //methods end
 };
 </script>
 
@@ -644,45 +899,104 @@ export default {
 @import "../assets/css/reset.css";
 @import "../assets/css/mindex.css";
 @import "../assets/css/mdetail.css";
+@import "../assets/css/mindex_goods.css";
 
-.noDataTip{
+/* 为了下面的按钮不fixed */
+.upContentWrap{
+  min-height: calc(100% - 51px);
+}
+
+.noDataTip {
   line-height: 50px;
   text-align: center;
 }
-.whiteBg{
+.whiteBg {
   background-color: #fff;
   color: #000;
 }
-.blueBg{
+.blueBg {
   background-color: #2ec5c4;
   color: #fff;
 }
 
+.warp_main {
+  height: 100vh;
+  overflow-y: auto;
+}
+
 /* 指派服务人员页面 */
-.assignSer-page{
-  position: absolute;
+.assignSer-page,
+.changeGood-page {
+  position: fixed;
   top: 0;
-  bottom: 0;
+  bottom: 50px;
   left: 0;
   right: 0;
   background-color: #f1f5f6;
   z-index: 7;
 }
-.serPerWrap{
+.serPerWrap {
   display: flex;
   flex-wrap: wrap;
 }
-.serPerItem{
+.serPerItem {
   flex: 0 0 calc(33.3333% - 10px);
   display: flex;
   align-items: center;
   line-height: 30px;
   background-color: #fff;
   margin: 5px;
-  box-shadow: 0 0 2px 0 rgba(214, 214, 214, 0.50);
+  box-shadow: 0 0 2px 0 rgba(214, 214, 214, 0.5);
   font-weight: normal;
 }
-.serPerItem>input{
-  margin:0 5px;
+.serPerItem > input {
+  margin: 0 5px;
+}
+
+/* 新增的物品item */
+.addGoodTitle{
+  line-height: 30px;
+  text-align: center;
+  background-color: #fff;
+  font-size: 17px;
+}
+.dishes_item{
+  flex: 0 0 calc(50% - 6px);
+}
+.dishes_text,
+.dishes_text {
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dishes_text_name,
+.dishes_text_name {
+  margin-bottom: 0;
+}
+.item_text_num,
+.item_text_num {
+  margin-top: 8px;
+}
+.item_text_num .num_add,
+.item_text_num .num_minus,
+.item_text_num .num_add,
+.item_text_num .num_minus {
+  padding: 0 10px;
+  font-size: 18px;
+}
+/* 选中的物品 */
+.select_dishes{
+  position: static;
+  position: static;
+  height: auto;
+}
+.select_dishes_item{
+  float: left;
+  width: calc(33.3333% - 10px);
+  margin: 5px;
+  border: 1px solid #D8D8D8;
+  line-height: 30px;
+  text-align: center;
 }
 </style>

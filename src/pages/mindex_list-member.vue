@@ -13,7 +13,7 @@
           <div class="mindex_item_name">{{item.rname}}</div>
           <div class="mindex_item_info clearfix" style="margin-bottom: 8px;">{{beginTime[index]}}-{{endTime[index]}}</div>
           <div class="mindex_item_info clearfix">{{item.ocreservename}}
-            <span class="mindex_item_fr fr" style="color:#989898;;" v-if="Number(item.orderstate)==0">已取消</span>
+            <span class="mindex_item_fr fr" style="color:#989898;" v-if="Number(item.orderstate)==0">已取消</span>
             <span class="mindex_item_fr fr" v-else>{{orderState}}</span>
           </div>
         </a>

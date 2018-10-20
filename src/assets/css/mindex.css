@@ -1,3 +1,9 @@
+a{
+  color: #555;
+}
+a:focus{
+  color:transparent !important;
+}
 body{
 	min-width: 320px;
 	color: #000;

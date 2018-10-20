@@ -14,16 +14,17 @@
     </div>
     <!-- 选择时间段 -->
     <div class="book" id="book_list">
-      <div class="book_title">{{rinfo.rname}}<span class="book_check fr" @click="openLookInfo">查看</span></div>
+      <div class="book_title">{{rinfo.rname}}<span class="book_check fr" @click="openLookInfo">详情</span></div>
       <!-- 点击查看弹窗 -->
       <div class="modal fade" id="myCheck" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="check_room modal-dialog">
           <div class="modal-body">
-            <div class="check_room_img">
-              <!-- <img src="../img/s.png"> -->
-            </div>
+            <!-- 会议室图片？ -->
+            <!-- <div class="check_room_img" v-cloak v-if="modalInfo.rpic">
+              <img src="modalInfo.rpic">
+            </div> -->
             <div class="mindex_jump_title">会议室:<span>{{modalInfo.rname}}</span></div>
-            <div class="mindex_jump_title">介绍:<span>{{modalInfo.rintroduce}}</span></div>
+            <div class="mindex_jump_title" style="font-size:16px;">介绍:<span>{{modalInfo.rintroduce}}</span></div>
           </div>
           <div class="kong" style="height: 70px;"></div>
           <div class="btn_box button_btn">

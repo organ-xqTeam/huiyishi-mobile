@@ -16,9 +16,9 @@
           <div class="mindex_jump_title">会议室</div>
           <input class="mindex_jump_input" type="type" name="" v-model="modalName">
           <div class="mindex_jump_title">起始日期</div>
-          <input class="mindex_jump_input form-control" id='datetime1' type="type" name="">
+          <input class="mindex_jump_input form-control" id='datetime1' type="type" name="" readonly="readonly">
           <div class="mindex_jump_title">终止日期</div>
-          <input class="mindex_jump_input form-control" id='datetime2' type="type" name="">
+          <input class="mindex_jump_input form-control" id='datetime2' type="type" name="" readonly="readonly">
           <!-- <div class="mindex_jump_title">服务人员</div>
           <input class="mindex_jump_input" type="type" name=""> -->
         </div>
@@ -36,7 +36,10 @@
         <a v-for="(item,index) in orderList" :key="index" href="javascript:void(0)" @click="targetContent(item)" class="mindex_item">
           <div class="mindex_item_name">{{item.rname}}</div>
           <div class="mindex_item_info clearfix" style="margin-bottom: 8px;">{{beginTime[index]}}-{{endTime[index]}}</div>
-          <div class="mindex_item_info clearfix">{{item.username}} <span class="mindex_item_fr fr">{{orderState}}</span></div>
+          <div class="mindex_item_info clearfix">{{item.username}}
+            <span class="mindex_item_fr fr" style="color:#989898;" v-cloak v-if="Number(item.orderstate)==0">已取消</span>
+            <span class="mindex_item_fr fr" v-cloak v-else>{{orderState}}</span>
+          </div>
         </a>
       </template>
       <div class="noDataTip" v-cloak v-else>

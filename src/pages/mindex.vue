@@ -58,7 +58,7 @@
             </template>
           </select>
           <div class="mindex_jump_title">日期</div>
-          <input class="mindex_jump_input form-control" id='datetime' type="type" name="">
+          <input class="mindex_jump_input form-control" id='datetime' type="type" name="" readonly="readonly">
         </div>
         <div class="button_btn">
           <button type="button" class="submit" @click="filterBtn">确定</button>

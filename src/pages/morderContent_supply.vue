@@ -1,7 +1,7 @@
 <template>
   <div class="warp_main">
     <div class="basic">
-      <div class="basic_title mindex_top ac">会议补充信息</div>
+      <div class="basic_title mindex_top ac">补充信息</div>
       <!-- 会议补充信息 -->
       <div class="mindex_top table_top">
         <table class="mindex_table">
@@ -13,7 +13,7 @@
           </tr>
           <!-- 对接 -->
           <tr>
-            <td class="table_name">是否与服务人员对接</td>
+            <td class="table_name">是否对接</td>
             <td>
               <template v-cloak v-if="Number(isDockingState)==1">
                 是
@@ -31,7 +31,7 @@
               </td>
             </tr>
             <tr>
-              <td class="table_name">会议使用联系人</td>
+              <td class="table_name">使用联系人</td>
               <td><input class="mindex_input" type="text" name="" v-model="ocusename" readonly="readonly"></td>
             </tr>
             <tr>
@@ -74,7 +74,7 @@
       <!-- 会议布展情况 -->
       <div class="mindex_top table_top basic">
         <table class="mindex_table">
-          <caption class="table_title">会议布展情况</caption>
+          <caption class="table_title">布展情况</caption>
           <tr style="border-top: none;">
             <td class="table_name">展台</td>
             <td><input class="mindex_input" type="number" name="" v-model="ocshowplatform" readonly="readonly"></td>
@@ -145,7 +145,7 @@
     </div>
 
     <!-- 拒绝原因弹窗 -->
-    <div class="modal fade" id="repulse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="repulse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content" style="margin-top: 50px;">
           <div class="modal-header">
@@ -164,7 +164,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!--提交按钮-->
     <div class="kong"></div>
