@@ -2,7 +2,9 @@
 	margin-top: 8px;
 }
 .basic_title{
-	font-size: 1.6em;
+  /* font-size: 1.6em; */
+  font-size: 1.4em;
+  /* 2018.10.22 */
 	border-bottom: 1px solid #D8D8D8;
 }
 .table_top{
@@ -41,7 +43,9 @@
 	display: flex;
 	justify-content: space-around;
 	width: 100%;
-	padding: 0 6% 20px 6%;
+  /* padding: 0 6% 20px 6%; */
+  padding: 0 6% 5px;
+  /* 2018.10.22 */
 	box-sizing: border-box;
 }
 

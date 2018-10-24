@@ -3,7 +3,8 @@ import Router from 'vue-router'
 
 import mlogin from '@/pages/mlogin' //登录页面
 import mindex from '@/pages/mindex' //主页
-import mindexBook from '@/pages/mindex_book'
+import mforget from '@/pages/mforget' //忘记密码
+import mindexBook from '@/pages/mindex_book' //这个会议室一天的预定情况
 import mindexBasic from '@/pages/mindex_basic' //会议室预定信息填写
 
 import mreview from '@/pages/mreview' //评论
@@ -22,6 +23,11 @@ export default new Router({
       path: '/mlogin',
       name: 'mlogin',
       component: mlogin
+    },
+    {
+      path: '/mforget',
+      name: 'mforget',
+      component: mforget
     },
     {
       path: '/mindex',

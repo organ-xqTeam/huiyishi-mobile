@@ -97,5 +97,6 @@ html {
 /* 禁用元素点击事件 */
 .eventsDisabled {
   pointer-events: none;
+  cursor: pointer;
 }
 

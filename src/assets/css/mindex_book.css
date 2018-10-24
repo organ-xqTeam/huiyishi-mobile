@@ -20,7 +20,9 @@
 
 .book_time li{
 	padding: 10px 20px;
-	font-size: 1.3em;
+  /* font-size: 1.3em; */
+  font-size: 1.2em;
+  /* 2018.10.22 */
 	border-bottom: 1px solid #F1F5F6;
 }
 

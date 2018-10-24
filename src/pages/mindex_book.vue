@@ -54,242 +54,285 @@ export default {
   name: "mindexBook",
   data() {
     return {
-      rinfo:{}, //这个会议室的信息
+      rinfo: {}, //这个会议室的信息
 
-      selectedDate:{}, //上一个页面传来的选择的日期，后面好像没用了
+      selectedDate: {}, //上一个页面传来的选择的日期，后面好像没用了
 
-      selectedDateIndex:0, //当前选择的日期index
+      selectedDateIndex: 0, //当前选择的日期index
       //表头
-      year:"",
-      month:"",
-      dateArr:[], //日期数组
+      year: "",
+      month: "",
+      dateArr: [], //日期数组
 
-      items:[
-					{ message: '07:00~07:30',isAlready:false },
-					{ message: '07:30~08:00',isAlready:false },
-          { message: '08:00~08:30',isAlready:false },
-          { message: '08:30~09:00',isAlready:false },
-					{ message: '09:00~09:30',isAlready:false },
-					{ message: '09:30~10:00',isAlready:false },
-					{ message: '10:00~10:30',isAlready:false },
-					{ message: '10:30~11:00',isAlready:false },
-					{ message: '11:00~11:30',isAlready:false },
-					{ message: '11:30~12:00',isAlready:false },
-					{ message: '12:00~12:30',isAlready:false },
-					{ message: '12:30~13:00',isAlready:false },
-					{ message: '13:00~13:30',isAlready:false },
-					{ message: '13:30~14:00',isAlready:false },
-					{ message: '14:00~14:30',isAlready:false },
-					{ message: '14:30~15:00',isAlready:false },
-					{ message: '15:00~15:30',isAlready:false },
-					{ message: '15:30~16:00',isAlready:false },
-					{ message: '16:00~16:30',isAlready:false },
-					{ message: '16:30~17:00',isAlready:false },
-					{ message: '17:00~17:30',isAlready:false },
-					{ message: '17:30~18:00',isAlready:false },
-					{ message: '18:00~18:30',isAlready:false },
-					{ message: '18:30~19:00',isAlready:false },
-					{ message: '19:00~19:30',isAlready:false },
-					{ message: '19:30~20:00',isAlready:false },
-					{ message: '20:00~20:30',isAlready:false },
-					{ message: '20:30~21:00',isAlready:false }
-        ],
-        selectedTimeIndex:[],
+      //下面的时间段
+      items: [
+        { message: "07:00~07:30", isAlready: false },
+        { message: "07:30~08:00", isAlready: false },
+        { message: "08:00~08:30", isAlready: false },
+        { message: "08:30~09:00", isAlready: false },
+        { message: "09:00~09:30", isAlready: false },
+        { message: "09:30~10:00", isAlready: false },
+        { message: "10:00~10:30", isAlready: false },
+        { message: "10:30~11:00", isAlready: false },
+        { message: "11:00~11:30", isAlready: false },
+        { message: "11:30~12:00", isAlready: false },
+        { message: "12:00~12:30", isAlready: false },
+        { message: "12:30~13:00", isAlready: false },
+        { message: "13:00~13:30", isAlready: false },
+        { message: "13:30~14:00", isAlready: false },
+        { message: "14:00~14:30", isAlready: false },
+        { message: "14:30~15:00", isAlready: false },
+        { message: "15:00~15:30", isAlready: false },
+        { message: "15:30~16:00", isAlready: false },
+        { message: "16:00~16:30", isAlready: false },
+        { message: "16:30~17:00", isAlready: false },
+        { message: "17:00~17:30", isAlready: false },
+        { message: "17:30~18:00", isAlready: false },
+        { message: "18:00~18:30", isAlready: false },
+        { message: "18:30~19:00", isAlready: false },
+        { message: "19:00~19:30", isAlready: false },
+        { message: "19:30~20:00", isAlready: false },
+        { message: "20:00~20:30", isAlready: false },
+        { message: "20:30~21:00", isAlready: false }
+      ],
+      selectedTimeIndex: [],
 
-        //会议室介绍信息
-        modalInfo:{}
-    }
+      //会议室介绍信息
+      modalInfo: {}
+    };
   },
-  watch:{
-    selectedDateIndex(){ //日期切换的时候查数据
-      this.getBookTime()
-      this.selectedTimeIndex=[]
-    },
+  watch: {
+    selectedDateIndex() {
+      //日期切换的时候查数据
+      this.getBookTime();
+      this.selectedTimeIndex = [];
+    }
   },
   mounted() {
-    this.getParam()
-    this.generateDate(new Date(this.selectedDate.dateStr))
+    this.getParam();
+    this.generateDate(new Date(this.selectedDate.dateStr));
 
-    this.getBookTime()
+    this.getBookTime();
   },
-  methods:{
+  methods: {
     //选择时间
-    selectTime(item,index){
-      if(item.isAlready){
-        return
+    selectTime(item, index) {
+      if (item.isAlready) {
+        return;
       }
-      if(this.selectedTimeIndex.indexOf(index)==-1){
-        this.selectedTimeIndex.push(index)
-      }else{
-        let idx=this.selectedTimeIndex.indexOf(index)
-        this.selectedTimeIndex.splice(idx,1)
+      if (this.selectedTimeIndex.indexOf(index) == -1) {
+        this.selectedTimeIndex.push(index);
+      } else {
+        let idx = this.selectedTimeIndex.indexOf(index);
+        this.selectedTimeIndex.splice(idx, 1);
       }
-      this.selectedTimeIndex.sort(function(a,b){
-        return a-b
-      })
-      console.log(this.selectedTimeIndex)
+      this.selectedTimeIndex.sort(function(a, b) {
+        return a - b;
+      });
+      console.log(this.selectedTimeIndex);
     },
     //判断数组是否连续
-    checkArrContinuous(){
-      let arr=this.selectedTimeIndex
-      var flag=true
-      if(arr.length>0){
-        arr.forEach(function(value,index){
-          if(index>=1){ //从第二个开始判断
-            flag=(value-arr[index-1]==1)
+    checkArrContinuous() {
+      let arr = this.selectedTimeIndex;
+      var flag = true;
+      if (arr.length > 0) {
+        arr.forEach(function(value, index) {
+          if (index >= 1) {
+            //从第二个开始判断
+            flag = value - arr[index - 1] == 1;
           }
-        })
-        if(!flag){
-          alert("请选择连续的时间段")
+        });
+        if (!flag) {
+          alert("请选择连续的时间段");
         }
       }
-      return flag
+      return flag;
     },
     //去预定会议室填写页面
-    gotoDetail(){
-      let self=this
-      if(!this.checkArrContinuous()){
-        return
+    gotoDetail() {
+      let self = this;
+      //验证
+      //验证是否选择了时间
+      if (this.selectedTimeIndex.length == 0) {
+        alert("您未选择时间段");
+        return;
       }
-
-      this.$router.push({
-          path:"/mindex/mindexBook/mindexBasic",
-          query:{
-            data:self.$data
+      //验证是否连续
+      if (!this.checkArrContinuous()) {
+        return;
+      }
+      //验证是否锁
+      // this.checkLockRoom(function(){
+      self.$router.push({
+        path: "/mindex/mindexBook/mindexBasic",
+        query: {
+          data: self.$data
+        }
+      });
+      // })
+    },
+    //验证room是否被锁
+    checkLockRoom(callback) {
+      let self = this;
+      let postData = {
+        rid: self.rinfo.rid
+      };
+      console.log(postData);
+      self.axios
+        .post(Global.host + "/user/checkLockRoom", this.qs.stringify(postData))
+        .then(function(res) {
+          console.log(res);
+          if (Number(res.data) == 0) {
+            if (callback) {
+              callback();
+            }
+          } else {
+            alert("该会议室正在被编辑，请稍后操作");
           }
-      })
+        })
+        .catch(function(res) {
+          console.log(res);
+        });
     },
     //获取传来的参数（这个会议室的信息）
-    getParam(){
-      console.log(this.$route.query)
-      this.rinfo=this.$route.query.item
-      this.year=this.$route.query.year
-      this.month=this.$route.query.month
-      this.selectedDate=this.$route.query.date
+    getParam() {
+      console.log(this.$route.query);
+      this.rinfo = this.$route.query.item;
+      this.year = this.$route.query.year;
+      this.month = this.$route.query.month;
+      this.selectedDate = this.$route.query.date;
     },
     //查询这个会议室这一天的预定信息
-    getBookTime(){
-      let self=this
-      console.log(this.rinfo)
-      let postData={
-        rid:this.rinfo.rid,
-        dateAssign:this.dateArr[this.selectedDateIndex].dateStr
-      }
-      console.log(postData)
-      Global.openLoading()
-      this.axios.post(Global.host+'/user/showRoomByAssignDay',this.qs.stringify(postData))
-      .then(function(res){
-        Global.closeLoading()
-        console.log(res)
-        let arr=res.data
-        console.log(arr)
-        if(arr.length>0){
-          //绘制
-          //清空
-          self.items.forEach(function(obj){
-            obj.isAlready=false
-          })
-          //清空end
-          arr.forEach(function(obj){
-            let bgtime=Global.dateToFormat(new Date(obj.ocbegintime))
-            let edtime=Global.dateToFormat(new Date(obj.ocendtime))
-            let bgtimehour=bgtime.substr(bgtime.length-5,5)
-            let edtimehour=edtime.substr(edtime.length-5,5)
-            console.log(bgtimehour,edtimehour)
-            self.drawOneTime(bgtimehour,edtimehour)
-          })
-        }
-        // self.drawOneTime("10:00","11:30")
-      })
-      .catch(function(res){
-        Global.closeLoading()
-        console.log(res)
-      })
+    getBookTime() {
+      let self = this;
+      console.log(this.rinfo);
+      let postData = {
+        rid: this.rinfo.rid,
+        dateAssign: this.dateArr[this.selectedDateIndex].dateStr
+      };
+      console.log(postData);
+      Global.openLoading();
+      this.axios
+        .post(
+          Global.host + "/user/showRoomByAssignDay",
+          this.qs.stringify(postData)
+        )
+        .then(function(res) {
+          Global.closeLoading();
+          console.log(res);
+          let arr = res.data;
+          console.log(arr);
+          if (arr.length > 0) {
+            //绘制
+            //清空
+            self.items.forEach(function(obj) {
+              obj.isAlready = false;
+            });
+            //清空end
+            arr.forEach(function(obj) {
+              let bgtime = Global.dateToFormat(new Date(obj.ocbegintime));
+              let edtime = Global.dateToFormat(new Date(obj.ocendtime));
+              let bgtimehour = bgtime.substr(bgtime.length - 5, 5);
+              let edtimehour = edtime.substr(edtime.length - 5, 5);
+              console.log(bgtimehour, edtimehour);
+              self.drawOneTime(bgtimehour, edtimehour);
+            });
+          }
+          // self.drawOneTime("10:00","11:30")
+        })
+        .catch(function(res) {
+          Global.closeLoading();
+          console.log(res);
+        });
     },
     //绘制一个预定信息
-    drawOneTime(bgtime,edtime){
-      console.log("绘制一个")
-      let bgIndex
-      let edIndex
-      this.items.forEach(function(obj,index){
+    drawOneTime(bgtime, edtime) {
+      console.log("绘制一个");
+      let bgIndex;
+      let edIndex;
+      this.items.forEach(function(obj, index) {
         //找到开始绘制的index
-        if(obj.message.substr(0,5)==bgtime){
-          bgIndex=index
+        if (obj.message.substr(0, 5) == bgtime) {
+          bgIndex = index - 1;
         }
         //找到结束绘制的index
-        if(obj.message.substr(obj.message.length-5,5)==edtime){
-          edIndex=index
+        if (obj.message.substr(obj.message.length - 5, 5) == edtime) {
+          edIndex = index - 1;
         }
-      })
-      console.log(bgIndex,edIndex)
+      });
+      console.log(bgIndex, edIndex);
       //给time数组添加isAlready属性
-      for(let i=0;i<=edIndex-bgIndex;i++){
-        this.items[edIndex+i].isAlready=true
+      for (let i = 0; i <= edIndex - bgIndex; i++) {
+        this.items[edIndex + i].isAlready = true;
       }
-      console.log(this.items)
+      console.log(this.items);
     },
     //生成日期表头
-    generateDate(date){
+    generateDate(date) {
       // let date=new Date()
-      let stamp=date.getTime()
-      let dateStr=Global.dateToFormat(date)
-      console.log(dateStr)
+      let stamp = date.getTime();
+      let dateStr = Global.dateToFormat(date);
+      console.log(dateStr);
       //设置年
-      this.year=dateStr.substr(0,4)
+      this.year = dateStr.substr(0, 4);
       //设置月
-      this.month=dateStr.substr(5,2)
+      this.month = dateStr.substr(5, 2);
       //设置表头
-      let stampArr=[]
-      for(let i=0;i<7;i++){
-        stampArr[i]=stamp+i*86400000
+      let stampArr = [];
+      for (let i = 0; i < 7; i++) {
+        stampArr[i] = stamp + i * 86400000;
       }
       // console.log(stampArr)
-      this.dateArr=stampArr.map(function(stamp){
-        let date=new Date(stamp)
-        let weekDay=Global.getWeekDay(date)
-        let dateStr=Global.dateToFormat(date)
-        let obj={
-          weekDay:weekDay, //"星期五2018-09-28"
-          dateStr:dateStr.substr(0,10)
-        }
-        return obj
-      })
-      console.log(this.dateArr)
+      this.dateArr = stampArr.map(function(stamp) {
+        let date = new Date(stamp);
+        let weekDay = Global.getWeekDay(date);
+        let dateStr = Global.dateToFormat(date);
+        let obj = {
+          weekDay: weekDay, //"星期五2018-09-28"
+          dateStr: dateStr.substr(0, 10)
+        };
+        return obj;
+      });
+      console.log(this.dateArr);
     },
-    selectDate(index){
-      this.selectedDateIndex=index
-      this.year=this.dateArr[index].dateStr.substr(0,4)
-      this.month=this.dateArr[index].dateStr.substr(5,2)
+    selectDate(index) {
+      this.selectedDateIndex = index;
+      this.year = this.dateArr[index].dateStr.substr(0, 4);
+      this.month = this.dateArr[index].dateStr.substr(5, 2);
     },
     //查看这个会议室的信息 介绍
-    openLookInfo(){
-      if(JSON.stringify(this.modalInfo)!=="{}"){
-        $("#myCheck").modal("show")
-        return
+    openLookInfo() {
+      if (JSON.stringify(this.modalInfo) !== "{}") {
+        $("#myCheck").modal("show");
+        return;
       }
-      let self=this
-      let postData={
-        rid:Number(this.rinfo.rid)
-      }
-      console.log(postData)
-      Global.openLoading()
-      this.axios.post(Global.host+"/room/selectOneRoomByRid",this.qs.stringify(postData))
-      .then(function(res){
-        Global.closeLoading()
-        console.log(res)
-        self.modalInfo=res.data[0]
-        $("#myCheck").modal("show")
-      })
-      .catch(function(res){
-        Global.closeLoading()
-        console.log(res)
-      })
+      let self = this;
+      let postData = {
+        rid: Number(this.rinfo.rid)
+      };
+      console.log(postData);
+      Global.openLoading();
+      this.axios
+        .post(
+          Global.host + "/room/selectOneRoomByRid",
+          this.qs.stringify(postData)
+        )
+        .then(function(res) {
+          Global.closeLoading();
+          console.log(res);
+          self.modalInfo = res.data[0];
+          $("#myCheck").modal("show");
+        })
+        .catch(function(res) {
+          Global.closeLoading();
+          console.log(res);
+        });
     },
     //关闭模态框
-    closeModal(){
-      $("#myCheck").modal("hide")
+    closeModal() {
+      $("#myCheck").modal("hide");
     }
-  }, //methods end
+  } //methods end
 };
 </script>
 
@@ -299,10 +342,10 @@ export default {
 @import "../assets/css/reset.css";
 @import "../assets/css/mindex.css";
 @import "../assets/css/mindex_book.css";
-.mSelected{
+.mSelected {
   background-color: #eaf9f9;
 }
-.alreadySelected{
+.alreadySelected {
   background-color: #d8d8d8;
 }
 </style>

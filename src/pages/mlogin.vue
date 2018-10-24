@@ -13,15 +13,12 @@
       <button @click="login">登录</button>
     </div>
     <div class="mlogin_forget ar">
-      <a href="mforget.html" style="color: #aaa;">忘记密码?</a>
+      <router-link to="/mforget" style="color: #aaa;">忘记密码?</router-link>
     </div>
   </div>
 </template>
 
 <script>
-import "../assets/css/reset.css";
-import "../assets/css/iconfont.css";
-
 export default {
   name: "mlogin",
   data() {
@@ -111,7 +108,7 @@ export default {
           var mUserInfo=res.data
           mUserInfo.state=self.state //保存权限
           // mUserInfo.state=2 //测试用 审批部门
-          mUserInfo.state=3 //测试用 服务部门
+          // mUserInfo.state=3 //测试用 服务部门
 					localStorage.setItem("mUserInfo",JSON.stringify(mUserInfo))
 
 					if(callback){
@@ -129,4 +126,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import "../assets/css/mlogin.css";
+
+body{
+  background-color: #fff;
+}
 </style>

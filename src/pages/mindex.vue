@@ -16,7 +16,7 @@
       <router-link class="mindex_item" v-for="(item,index) in showArr" :key="index" :to="{path:'/mindex/mindexBook', query:{item:item,year:year,month:month,date:dateArr[selectedDateIndex]}}">
         <div class="mindex_item_l">
           <div class="mindex_item_img">
-            <img v-cloak v-if="item.rpic&&item.rpic!==''" :src="Global.host+item.rpic.split(',')[0]">
+            <img v-cloak v-if="item.rpic&&item.rpic!==''" :src="Global.domain+Global.host+'/'+item.rpic.split(',')[0]">
             <p v-cloak v-else>暂无图片</p>
           </div>
           <div>
