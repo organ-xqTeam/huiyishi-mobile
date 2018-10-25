@@ -81,9 +81,9 @@
         </div>
       </div>
       <div>
-        <router-link :to="{path:'/memberlist/morderContent/base/supply',query:{ocid:this.ocid} }">
+        <a href="javascript:void(0)" @click="goSupplyPage">
           <button class="add_info toSupply blueBg" style="color:#fff;height:47px;border-radius:6px;margin-top:20px;">查看补充信息</button>
-        </router-link>
+        </a>
       </div>
       <template v-cloak v-if="bg.length>0">
         <div class="look_goods" style="margin-top:0;">
@@ -177,6 +177,10 @@
     </div>
     <!--下面按钮 end -->
 
+
+
+
+
     <!-- 取消预定弹窗 -->
     <div class="modal fade" id="mySearch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -261,24 +265,14 @@
 
       <h3 class="addGoodTitle">基础物品</h3>
       <div class="serPerWrap">
-        <!-- <div class="goodItem" v-for="(item,index) in basicGoodArr" :key="index">
-          <label class="serPerItem">
-            <input type="checkbox" :value="index" v-model="selectedBasicIndex">
-            <span>{{item.bgname}}</span>
-          </label>
-          <div>
-            <span>-</span><input type="number" class="numInput"><span>+</span>
-          </div>
-        </div> -->
-
         <div class="dishes_item" v-for="(item,index) in basicGoodArr" :key="index">
-          <img class="dishes_img" v-cloak v-if="item.bgpic&&item.bgpic!==''" :src="Global.domain+Global.host+'/'+item.bgpic">
+          <img class="dishes_img" v-cloak v-if="item.bgpic&&item.bgpic!==''" :src="Global.domain+Global.host+item.bgpic">
           <div class="dishes_text">
             <p class="dishes_text_name">{{item.bgname}}</p>
             <div class="item_text_num ac">
-              <span class="num_add" @click="plusGood(item)">+</span>
-              <input type="number" name="" v-model="item.mNum">
               <span class="num_minus" @click="minusGood(item)">-</span>
+              <input type="number" name="" v-model="item.mNum">
+              <span class="num_add" @click="plusGood(item)">+</span>
             </div>
           </div>
           <input class="dishes_check" type="checkbox" name="" :value="item" v-model="selectedBasicGoodArr">
@@ -288,24 +282,14 @@
 
       <h3 class="addGoodTitle">增值物品</h3>
       <div class="serPerWrap">
-        <!-- <div class="goodItem" v-for="(item,index) in basicGoodArr" :key="index">
-          <label class="serPerItem">
-            <input type="checkbox" :value="index" v-model="selectedBasicIndex">
-            <span>{{item.bgname}}</span>
-          </label>
-          <div>
-            <span>-</span><input type="number" class="numInput"><span>+</span>
-          </div>
-        </div> -->
-
         <div class="dishes_item" v-for="(item,index) in addedGoodArr" :key="index">
-          <img class="dishes_img" v-cloak v-if="item.agpic&&item.agpic!==''" :src="Global.domain+Global.host+'/'+item.agpic">
+          <img class="dishes_img" v-cloak v-if="item.agpic&&item.agpic!==''" :src="Global.domain+Global.host+item.agpic">
           <div class="dishes_text">
             <p class="dishes_text_name">{{item.agname}} <span style="color:red;">￥{{item.agprice}}</span></p>
             <div class="item_text_num ac">
-              <span class="num_add" @click="plusGood(item)">+</span>
-              <input type="number" name="" v-model="item.mNum">
               <span class="num_minus" @click="minusGood(item)">-</span>
+              <input type="number" name="" v-model="item.mNum">
+              <span class="num_add" @click="plusGood(item)">+</span>
             </div>
           </div>
           <input class="dishes_check" type="checkbox" name="" :value="item" v-model="selectedAddedGoodArr">
@@ -332,7 +316,6 @@
       </div>
       <!--下面按钮 end -->
     </div>
-
   </div>
 </template>
 
@@ -342,6 +325,8 @@ export default {
   name: "morderContentBase",
   data() {
     return {
+      Global:Global,
+
       queryInfo: {}, //页面传值item
 
       ocid: 0,
@@ -416,6 +401,20 @@ export default {
   mounted() {
     this.getPageInfo();
     this.initDo();
+  },
+  activated(){
+    if(localStorage.getItem("queryInfo")&&localStorage.getItem("queryInfo")!==""){
+      console.log(11)
+      let item=JSON.parse(localStorage.getItem("queryInfo"))
+      this.queryInfo = item;
+      localStorage.setItem("queryInfo","")
+
+      this.initDo();
+    }else{
+      console.log(22)
+      this.getPageInfo();
+      this.initDo();
+    }
   },
   methods: {
     //页面传值获取数据
@@ -530,12 +529,23 @@ export default {
           Global.closeLoading();
         });
     },
+    //去补充信息页面
+    goSupplyPage(){
+      localStorage.setItem("queryInfo",JSON.stringify(this.queryInfo))
+
+      this.$router.push({
+        path: "/mlogin/memberlist/morderContent/base/supply",
+        query: {
+          ocid: this.ocid,
+        }
+      });
+    },
     goComment() {
       let self = this;
       if (this.dataArry[3] == null) {
         // this.unlockRoom(function(){
-        slef.$router.push({
-          path: "/memberlist/morderContent/base/mreview",
+        self.$router.push({
+          path: "/mlogin/memberlist/morderContent/base/mreview",
           query: {
             ocid: this.ocid,
             rid: this.rid
@@ -609,7 +619,7 @@ export default {
         data: postData,
         success: function(res) {
           $("#realPassBtn").removeClass("eventsDisabled");
-          //console.log(res)
+          console.log(res)
           if (Number(res) == 1) {
             alert("操作成功");
 
@@ -1024,7 +1034,7 @@ export default {
       }
 
       let postData = {
-        ocid: this.ocid,
+        ocid: Number(this.ocid),
 
         boname: bonameArr,
         bonum: bonumArr,
@@ -1043,13 +1053,13 @@ export default {
         .then(function(res) {
           $("#submitChangeGood").removeClass("eventsDisabled");
           console.log(res);
-          if (res && Number(res) == 1) {
+          if (res.data && Number(res.data) == 1) {
             alert("操作成功");
 
             // self.unlockRoom(function(){
             self.$router.go(-1);
             // self.$router.push({
-            //     path:"/mindex/mindexBook/mindexBasic",
+            //     path:"/mlogin/mindex/mindexBook/mindexBasic",
             //     query:{
             //       data:self.$data
             //     }

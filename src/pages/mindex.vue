@@ -13,7 +13,7 @@
     </div>
     <!-- 主要列表 -->
     <div class="mindex_list">
-      <router-link class="mindex_item" v-for="(item,index) in showArr" :key="index" :to="{path:'/mindex/mindexBook', query:{item:item,year:year,month:month,date:dateArr[selectedDateIndex]}}">
+      <router-link class="mindex_item" v-for="(item,index) in showArr" :key="index" :to="{path:'/mlogin/mindex/mindexBook', query:{item:item,year:year,month:month,date:dateArr[selectedDateIndex]}}">
         <div class="mindex_item_l">
           <div class="mindex_item_img">
             <img v-cloak v-if="item.rpic&&item.rpic!==''" :src="Global.domain+Global.host+'/'+item.rpic.split(',')[0]">
@@ -34,11 +34,11 @@
     </div>
     <!-- 下方按钮 -->
     <div class="button_btn">
-      <router-link class="mindex_tab mycolor" to="/mindex" style="font-size: 1em;"><i class="iconfont icon-shouye"></i> <br>首页</router-link>
-      <router-link class="mindex_tab" to="/mindexlist/member" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>我的预定</router-link>
+      <router-link class="mindex_tab mycolor" to="/mlogin/mindex" style="font-size: 1em;"><i class="iconfont icon-shouye"></i> <br>首页</router-link>
+      <router-link class="mindex_tab" to="/mlogin/mindexlistMember" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>我的预定</router-link>
 
-      <router-link class="mindex_tab" to="/mindexlist/approve" style="font-size: 1em;" v-cloak v-show="Number(rightState)==2"><i class="iconfont icon-liebiao"></i><br>审批管理</router-link>
-      <router-link class="mindex_tab" to="/mindexlist/service" style="font-size: 1em;" v-cloak v-show="Number(rightState)==3"><i class="iconfont icon-liebiao"></i><br>服务管理</router-link>
+      <router-link class="mindex_tab" to="/mlogin/mindexlistApprove" style="font-size: 1em;" v-cloak v-show="Number(rightState)==2"><i class="iconfont icon-liebiao"></i><br>审批管理</router-link>
+      <router-link class="mindex_tab" to="/mlogin/mindexlistService" style="font-size: 1em;" v-cloak v-show="Number(rightState)==3"><i class="iconfont icon-liebiao"></i><br>服务管理</router-link>
     </div>
 
     <!-- 筛选弹窗 -->
@@ -81,7 +81,7 @@ export default {
     return {
       Global: Global,
 
-      rightState:1, //默认普通用户 2主管部门 3服务部门
+      rightState:"", //默认普通用户 2主管部门 3服务部门
 
       selectedDateIndex: 0, //当前选择的日期index
       //表头
@@ -127,6 +127,7 @@ export default {
     },
     //获取用户信息 根据权限显示button
     getUserInfo(){
+      console.log("查local right")
       if(localStorage.getItem("mUserInfo")&&localStorage.getItem("mUserInfo")!==null&&localStorage.getItem("mUserInfo")!=="null"){
         let mUserInfo=JSON.parse(localStorage.getItem("mUserInfo"))
         console.log(mUserInfo)

@@ -98,7 +98,7 @@ export default {
       };
       console.log(postData);
       self.$router.push({
-        path: "/mindexlist/member",
+        path: "/mlogin/mindexlistMember",
         query: {
           ocid: item.ocid,
           item:item
@@ -115,7 +115,7 @@ export default {
           if(res&&Number(res)==1){
             alert("评论成功")
             self.$router.push({
-              path: "/mindexlist/member",
+              path: "/mlogin/mindexlistMember",
               query: {
                 ocid: item.ocid,
                 item:item

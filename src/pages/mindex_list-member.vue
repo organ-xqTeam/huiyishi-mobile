@@ -10,8 +10,9 @@
     <div class="mindex_list">
       <template v-cloak v-if="orderList.length>0">
         <a v-for="(item,index) in orderList" :key="index" href="javascript:void(0)" @click="targetContent(item)" class="mindex_item">
-          <div class="mindex_item_name">{{item.rname}}</div>
-          <div class="mindex_item_info clearfix" style="margin:4px 0;">{{beginTime[index]}}-{{endTime[index]}}</div>
+          <div class="mindex_item_name">{{item.ocsourcename}}</div>
+          <div class="mindex_item_info clearfix" style="margin:3px 0 0 0;">{{item.rname}}</div>
+          <div class="mindex_item_info clearfix" style="margin:0;">{{beginTime[index]}}-{{endTime[index]}}</div>
           <div class="mindex_item_info clearfix">{{item.ocreservename}}
             <span class="mindex_item_fr fr" style="color:#989898;" v-if="Number(item.orderstate)==0">已取消</span>
             <span class="mindex_item_fr fr" v-else>{{orderState}}</span>
@@ -26,11 +27,11 @@
     <!-- 下方按钮 -->
     <div class="kong"></div>
     <div class="button_btn">
-      <router-link class="mindex_tab" to="/mindex" style="font-size: 1em;"><i class="iconfont icon-shouye"></i> <br>首页</router-link>
-      <router-link class="mindex_tab mycolor" to="/mindexlist/member" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>我的预定</router-link>
+      <router-link class="mindex_tab" to="/mlogin/mindex" style="font-size: 1em;"><i class="iconfont icon-shouye"></i> <br>首页</router-link>
+      <router-link class="mindex_tab mycolor" to="/mlogin/mindexlistMember" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>我的预定</router-link>
 
-      <router-link class="mindex_tab" to="/mindexlist/approve" style="font-size: 1em;" v-cloak v-show="Number(rightState)==2"><i class="iconfont icon-liebiao"></i><br>审批管理</router-link>
-      <router-link class="mindex_tab" to="/mindexlist/service" style="font-size: 1em;" v-cloak v-show="Number(rightState)==3"><i class="iconfont icon-liebiao"></i><br>服务管理</router-link>
+      <router-link class="mindex_tab" to="/mlogin/mindexlistApprove" style="font-size: 1em;" v-cloak v-show="Number(rightState)==2"><i class="iconfont icon-liebiao"></i><br>审批管理</router-link>
+      <router-link class="mindex_tab" to="/mlogin/mindexlistService" style="font-size: 1em;" v-cloak v-show="Number(rightState)==3"><i class="iconfont icon-liebiao"></i><br>服务管理</router-link>
     </div>
   </div>
 </template>
@@ -129,7 +130,7 @@ export default {
     targetContent(item) {
       item.fromPage="member" //保存从哪个页面去的base
       this.$router.push({
-        path: "/memberlist/morderContent/base",
+        path: "/mlogin/memberlist/morderContent/base",
         query: {
           ocid: item.ocid,
           item:item,

@@ -3,6 +3,7 @@
     <ul class="mlist_tab" style="padding-right:40px;">
       <li class="mlist_tab_act" id="waitingOrder" v-on:click="loadClick">待接单</li>
       <li id="passOrder" v-on:click="loadClick">服务中</li>
+      <li id="waitingDocking" v-on:click="loadClick">待对接</li>
       <li id="repulshOrder" v-on:click="loadClick">已完成</li>
     </ul>
     <div class="mindex_title ac" style="margin: 5px;"><span class="iconfont icon-shaixuan" id="openModal" @click="openModal"></span></div>
@@ -34,9 +35,10 @@
     <div class="mindex_list">
       <template v-cloak v-if="orderList.length>0">
         <a v-for="(item,index) in orderList" :key="index" href="javascript:void(0)" @click="targetContent(item)" class="mindex_item">
-          <div class="mindex_item_name">{{item.rname}}</div>
-          <div class="mindex_item_info clearfix" style="margin:4px 0;">{{beginTime[index]}}-{{endTime[index]}}</div>
-          <div class="mindex_item_info clearfix">{{item.username}}
+          <div class="mindex_item_name">{{item.ocsourcename}}</div>
+          <div class="mindex_item_info clearfix" style="margin:3px 0 0 0;">{{item.rname}}</div>
+          <div class="mindex_item_info clearfix" style="margin:0;">{{beginTime[index]}}-{{endTime[index]}}</div>
+          <div class="mindex_item_info clearfix">{{item.ocreservename}}
             <span class="mindex_item_fr fr" style="color:#989898;" v-cloak v-if="Number(item.orderstate)==0">已取消</span>
             <span class="mindex_item_fr fr" v-cloak v-else>{{orderState}}</span>
           </div>
@@ -51,209 +53,270 @@
 
     <!-- 下方按钮 -->
     <div class="button_btn">
-      <router-link class="mindex_tab" to="/mindex" style="font-size: 1em;"><i class="iconfont icon-shouye"></i> <br>首页</router-link>
-      <router-link class="mindex_tab" to="/mindexlist/member" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>我的预定</router-link>
-      <router-link class="mindex_tab mycolor" to="/mindexlist/service" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>服务管理</router-link>
+      <router-link class="mindex_tab" to="/mlogin/mindex" style="font-size: 1em;"><i class="iconfont icon-shouye"></i>
+        <br>首页</router-link>
+      <router-link class="mindex_tab" to="/mlogin/mindexlistMember" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>我的预定</router-link>
+      <router-link class="mindex_tab mycolor" to="/mlogin/mindexlistService" style="font-size: 1em;"><i class="iconfont icon-liebiao"></i><br>服务管理</router-link>
     </div>
   </div>
 </template>
 
 <script>
-import "../assets/js/bootstrap-datetimepicker.min.js";
-import "../assets/js/bootstrap-datetimepicker.zh-CN.js";
+  import "../assets/js/bootstrap-datetimepicker.min.js";
+  import "../assets/js/bootstrap-datetimepicker.zh-CN.js";
 
-export default {
-  data() {
-    return {
-      //总容器
-      orderList: [],
-      /*时间容器*/
-      beginTime: [],
-      endTime: [],
-      /*同一状态*/
-      orderState: "",
+  export default {
+    data() {
+      return {
+        //总容器
+        orderList: [],
+        /*时间容器*/
+        beginTime: [],
+        endTime: [],
+        /*同一状态*/
+        orderState: "",
 
-      //筛选条件
-      modalName:"",
-    };
-  },
-  mounted() {
-    this.waitingOrderMet(1, "待接单");
-    this.initSome()
-  },
-  methods: {
-    initSome(){
-      $("#datetime1").datetimepicker({
-        format: "yyyy-mm-dd ",
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: false,
-        showMeridian: true,
-        pickerPosition: "bottom-right",
-        language: "zh-CN", //中文，需要引用zh-CN.js包
-        startView: 2, //月视图
-        minView: 2 //日期时间选择器所能够提供的最精确的时间选择视图
-      }).on('click',function(e){
-          $("#datetime2").datetimepicker("setStartDate", $("#datetime1").val());
-      });
-      $("#datetime2").datetimepicker({
-        format: "yyyy-mm-dd ",
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: false,
-        showMeridian: true,
-        pickerPosition: "bottom-right",
-        language: "zh-CN", //中文，需要引用zh-CN.js包
-        startView: 2, //月视图
-        minView: 2 //日期时间选择器所能够提供的最精确的时间选择视图
-      }).on('click',function(e){
-          $("#datetime1").datetimepicker("setEndDate", $("#datetime2").val());
-      });
-    },
-    loadClick: function(event) {
-      let id = event.target.id;
-      //样式
-      $("passOrder").addClass("mlist_tab_act");
-      $("#" + id)
-        .addClass("mlist_tab_act")
-        .siblings()
-        .removeClass("mlist_tab_act");
-      switch (id) {
-        case "waitingOrder":
-          this.waitingOrderMet(1, "待接单");
-          break;
-        case "passOrder":
-          this.waitingOrderMet(2, "服务中");
-          break;
-        case "repulshOrder":
-          this.waitingOrderMet(3, "已完成");
-          break;
-      }
-    },
-    waitingOrderMet(stateValueForm, stateText,searchName,searchBgtime,searchEdtime) {
-      let self = this;
-      let postData = {
-        stateValue: Number(stateValueForm),
-        serid: null, //假设
-        rid: null,
-        beginOtime: searchBgtime?searchBgtime:null,
-        endOtime: searchEdtime?searchEdtime:null,
-        rname:searchName?searchName:null
+        //筛选条件
+        modalName: "",
+
+        nowState: "待接单",
       };
-      console.log(postData)
-      Global.openLoading()
-      this.axios
-        .post(
-          Global.host + "/order/selectServiceListForMobile",
-          this.qs.stringify(postData)
-        )
-        .then(function(res) {
-          Global.closeLoading()
-          console.log(res)
-          self.orderList = res.data;
-          console.log(self.orderList)
-          let tempArry = res.data;
-          for (let index = 0; index < tempArry.length; index++) {
-            let begintime = tempArry[index].ocbegintime; //开始时间
-            let endtime = tempArry[index].ocendtime; //结束时间
-            let begintimeString = Global.dateToFormat(new Date(begintime));
-            let endtimeString = Global.dateToFormat(new Date(endtime));
-            let realEndtimeString = endtimeString.substr(
-              11,
-              endtimeString.length
-            );
-            self.beginTime.push(begintimeString);
-            self.endTime.push(realEndtimeString);
-            self.orderState = stateText;
-          }
-        })
-        .catch(function(res){
-          Global.closeLoading()
-          alert("没有您请求的数据")
+    },
+    mounted() {
+      this.waitingOrderMet(1, "待接单");
+      this.initSome()
+    },
+    activated() {
+      this.waitingOrderMet(1, this.nowState);
+    },
+    methods: {
+      initSome() {
+        $("#datetime1").datetimepicker({
+          format: "yyyy-mm-dd ",
+          autoclose: true,
+          todayBtn: true,
+          todayHighlight: false,
+          showMeridian: true,
+          pickerPosition: "bottom-right",
+          language: "zh-CN", //中文，需要引用zh-CN.js包
+          startView: 2, //月视图
+          minView: 2 //日期时间选择器所能够提供的最精确的时间选择视图
+        }).on('click', function (e) {
+          $("#datetime2").datetimepicker("setStartDate", $("#datetime1").val());
         });
-    },
-    targetContent(item) {
-      item.fromPage="service"
-      this.$router.push({
-        path: "/memberlist/morderContent/base",
-        query: {
-          ocid: item.ocid,
-          item:item
+        $("#datetime2").datetimepicker({
+          format: "yyyy-mm-dd ",
+          autoclose: true,
+          todayBtn: true,
+          todayHighlight: false,
+          showMeridian: true,
+          pickerPosition: "bottom-right",
+          language: "zh-CN", //中文，需要引用zh-CN.js包
+          startView: 2, //月视图
+          minView: 2 //日期时间选择器所能够提供的最精确的时间选择视图
+        }).on('click', function (e) {
+          $("#datetime1").datetimepicker("setEndDate", $("#datetime2").val());
+        });
+      },
+      loadClick: function (event) {
+        let id = event.target.id;
+        //样式
+        // $("passOrder").addClass("mlist_tab_act");
+        $("#" + id)
+          .addClass("mlist_tab_act")
+          .siblings()
+          .removeClass("mlist_tab_act");
+        switch (id) {
+          case "waitingOrder":
+            this.waitingOrderMet(1, "待接单");
+            break;
+          case "passOrder":
+            this.waitingOrderMet(2, "服务中");
+            break;
+          case "waitingDocking":
+            // this.waitingOrderMet(4, "待对接");
+            this.getWaitingDockingList()
+            break;
+          case "repulshOrder":
+            this.waitingOrderMet(3, "已完成");
+            break;
         }
-      });
-    },
-    /*筛选弹窗*/
-    openModal() {
-      //reset 模态框input
-      this.modalName=""
-      $("#datetime1").val("")
-      $("#datetime2").val("")
-      //reset 模态框input end
+      },
+      waitingOrderMet(stateValueForm, stateText, searchName, searchBgtime, searchEdtime) {
+        let self = this;
+        let postData = {
+          stateValue: Number(stateValueForm),
+          serid: null, //假设
+          rid: null,
+          beginOtime: searchBgtime ? searchBgtime : null,
+          endOtime: searchEdtime ? searchEdtime : null,
+          rname: searchName ? searchName : null
+        };
+        console.log(postData)
+        Global.openLoading()
+        this.axios
+          .post(
+            Global.host + "/order/selectServiceListForMobile",
+            this.qs.stringify(postData)
+          )
+          .then(function (res) {
+            Global.closeLoading()
+            console.log(res)
+            self.orderList = res.data;
+            console.log(self.orderList)
+            let tempArry = res.data;
+            for (let index = 0; index < tempArry.length; index++) {
+              let begintime = tempArry[index].ocbegintime; //开始时间
+              let endtime = tempArry[index].ocendtime; //结束时间
+              let begintimeString = Global.dateToFormat(new Date(begintime));
+              let endtimeString = Global.dateToFormat(new Date(endtime));
+              let realEndtimeString = endtimeString.substr(
+                11,
+                endtimeString.length
+              );
+              self.beginTime.push(begintimeString);
+              self.endTime.push(realEndtimeString);
+              self.orderState = "待对接";
+            }
 
-      $("#myModal").modal("show");
-    },
-    //点击筛选弹窗确认
-    confirmBtn(){
-      let id=$(".mlist_tab_act").attr("id")
-      console.log(id)
-      //筛选条件
-      let searchName=null
-      let searchBgtime=null
-      let searchEdtime=null
+            self.nowState = "待对接"
+          })
+          .catch(function (res) {
+            console.log(res)
+            Global.closeLoading()
+            alert("没有您请求的数据")
+          });
+      },
+      //获取待对接列表
+      getWaitingDockingList() {
+        let self=this
+        let postData = {
+          beginOtime: null,
+          endOtime: null,
+          name: null,
+          rid: null,
+          pageSize: 999,
+          page: 1,
 
-      if(this.modalName.trim()!==""){
-        searchName=this.modalName.trim()
-      }
-      if($("#datetime1").val().trim()!==""){
-        searchBgtime=$("#datetime1").val().trim()
-      }
-      if($("#datetime2").val().trim()!==""){
-        searchEdtime=$("#datetime2").val().trim()
-      }
+          otakeorder: 4, //待对接
+        }
+        console.log(postData)
+        this.axios
+          .post(
+            Global.host + "/order/selectSimpleListByFuWu",
+            this.qs.stringify(postData)
+          )
+          .then(function (res) {
+            Global.closeLoading()
+            console.log(res)
+            self.orderList = res.data;
+            console.log(self.orderList)
+            let tempArry = res.data;
+            for (let index = 0; index < tempArry.length; index++) {
+              let begintime = tempArry[index].ocbegintime; //开始时间
+              let endtime = tempArry[index].ocendtime; //结束时间
+              let begintimeString = Global.dateToFormat(new Date(begintime));
+              let endtimeString = Global.dateToFormat(new Date(endtime));
+              let realEndtimeString = endtimeString.substr(
+                11,
+                endtimeString.length
+              );
+              self.beginTime.push(begintimeString);
+              self.endTime.push(realEndtimeString);
+              self.orderState = "待对接";
+            }
 
-      switch (id) {
-        case "waitingOrder":
-          this.waitingOrderMet(1, "待接单" ,searchName,searchBgtime,searchEdtime);
-          break;
-        case "passOrder":
-          this.waitingOrderMet(2, "服务中" ,searchName,searchBgtime,searchEdtime);
-          break;
-        case "repulshOrder":
-          this.waitingOrderMet(3, "已完成" ,searchName,searchBgtime,searchEdtime);
-          break;
-      }
+            self.nowState = "待对接"
+          })
+          .catch(function (res) {
+            console.log(res)
+            Global.closeLoading()
+            alert("没有您请求的数据")
+          });
+      },
+      targetContent(item) {
+        item.fromPage = "service"
+        this.$router.push({
+          path: "/mlogin/memberlist/morderContent/base",
+          query: {
+            ocid: item.ocid,
+            item: item
+          }
+        });
+      },
+      /*筛选弹窗*/
+      openModal() {
+        //reset 模态框input
+        this.modalName = ""
+        $("#datetime1").val("")
+        $("#datetime2").val("")
+        //reset 模态框input end
 
-      $("#myModal").modal("hide");
-    }
-  }, //methods end
-};
+        $("#myModal").modal("show");
+      },
+      //点击筛选弹窗确认
+      confirmBtn() {
+        let id = $(".mlist_tab_act").attr("id")
+        console.log(id)
+        //筛选条件
+        let searchName = null
+        let searchBgtime = null
+        let searchEdtime = null
+
+        if (this.modalName.trim() !== "") {
+          searchName = this.modalName.trim()
+        }
+        if ($("#datetime1").val().trim() !== "") {
+          searchBgtime = $("#datetime1").val().trim()
+        }
+        if ($("#datetime2").val().trim() !== "") {
+          searchEdtime = $("#datetime2").val().trim()
+        }
+
+        switch (id) {
+          case "waitingOrder":
+            this.waitingOrderMet(1, "待接单", searchName, searchBgtime, searchEdtime);
+            break;
+          case "passOrder":
+            this.waitingOrderMet(2, "服务中", searchName, searchBgtime, searchEdtime);
+            break;
+          case "repulshOrder":
+            this.waitingOrderMet(3, "已完成", searchName, searchBgtime, searchEdtime);
+            break;
+        }
+
+        $("#myModal").modal("hide");
+      }
+    }, //methods end
+  };
 </script>
 
 <style scoped>
-@import "../assets/css/bootstrap.min.css";
-@import "../assets/css/bootstrap-datetimepicker.min.css";
-@import "../assets/css/reset.css";
-@import "../assets/css/mindex.css";
-@import "../assets/css/mlist.css";
+  @import "../assets/css/bootstrap.min.css";
+  @import "../assets/css/bootstrap-datetimepicker.min.css";
+  @import "../assets/css/reset.css";
+  @import "../assets/css/mindex.css";
+  @import "../assets/css/mlist.css";
 
-.noDataTip{
-  line-height: 50px;
-  text-align: center;
-}
-#openModal{
-  font-size: 1.4em;
-  position: absolute;
-  right: 8px;
-  top: 8px;
-}
+  .noDataTip {
+    line-height: 50px;
+    text-align: center;
+  }
 
-.whiteBg{
-  background-color: #fff;
-  color: #000;
-}
-.blueBg{
-  background-color: #2ec5c4;
-  color: #fff;
-}
+  #openModal {
+    font-size: 1.4em;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
 
+  .whiteBg {
+    background-color: #fff;
+    color: #000;
+  }
+
+  .blueBg {
+    background-color: #2ec5c4;
+    color: #fff;
+  }
 </style>

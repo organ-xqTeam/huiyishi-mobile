@@ -30,49 +30,49 @@ export default new Router({
       component: mforget
     },
     {
-      path: '/mindex',
+      path: '/mlogin/mindex',
       name: 'mindex',
       component: mindex,
       meta:{keepAlive:true}
     },
     {
-      path: '/mindex/mindexBook',
+      path: '/mlogin/mindex/mindexBook',
       name: 'mindexBook',
       component: mindexBook,
       meta:{keepAlive:true},
     },
     {
-      path: '/mindex/mindexBook/mindexBasic',
+      path: '/mlogin/mindex/mindexBook/mindexBasic',
       name: 'mindexBasic',
       component: mindexBasic,
     },
     {
-      path: '/memberlist/morderContent/base/mreview',
+      path: '/mlogin/memberlist/morderContent/base/mreview',
       name: 'mreview',
       component: mreview
     },
     {
-      path: '/memberlist/morderContent/base',
+      path: '/mlogin/memberlist/morderContent/base',
       name: 'morderContentBase',
       component: morderContentBase,
       meta:{keepAlive:true},
     },
     {
-      path: '/memberlist/morderContent/base/supply',
+      path: '/mlogin/memberlist/morderContent/base/supply',
       name: 'morderContentSupply',
       component: morderContentSupply
     },{
-      path: '/mindexlist/member',
+      path: '/mlogin/mindexlistMember',
       name: 'mindexlistmember',
       component: mindexlistmember,
       // meta:{keepAlive:true}
     },{
-      path: '/mindexlist/approve',
+      path: '/mlogin/mindexlistApprove',
       name: 'mindexlistapprove',
       component: mindexlistapprove,
       // meta:{keepAlive:true}
     },{
-      path: '/mindexlist/service',
+      path: '/mlogin/mindexlistService',
       name: 'mindexlistservice',
       component: mindexlistservice,
       // meta:{keepAlive:true}

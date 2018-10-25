@@ -20,9 +20,12 @@
         <div class="check_room modal-dialog">
           <div class="modal-body">
             <!-- 会议室图片？ -->
-            <!-- <div class="check_room_img" v-cloak v-if="modalInfo.rpic">
-              <img src="modalInfo.rpic">
-            </div> -->
+            <div class="check_room_img" v-cloak v-if="modalInfo.rpic&&modalInfo.rpic!==''">
+              <img :src="Global.domain+Global.host+'/'+modalInfo.rpic">
+            </div>
+            <div class="check_room_img" v-cloak v-else>
+              暂无图片
+            </div>
             <div class="mindex_jump_title">会议室:<span>{{modalInfo.rname}}</span></div>
             <div class="mindex_jump_title" style="font-size:16px;">介绍:<span>{{modalInfo.rintroduce}}</span></div>
           </div>
@@ -30,8 +33,9 @@
           <div class="btn_box button_btn">
             <button class="submit toDetail add_info cancle" @click="closeModal">确定</button>
           </div>
-        </div><!-- /.modal -->
+        </div>
       </div>
+      <!-- 点击查看弹窗 end -->
       <!-- 时间选择 -->
       <ul class="book_time ac">
         <li v-for="(item,index) in items" :key="index" :class="{mSelected:selectedTimeIndex.indexOf(index)>-1,alreadySelected:item.isAlready}" @click="selectTime(item,index)">
@@ -54,6 +58,8 @@ export default {
   name: "mindexBook",
   data() {
     return {
+      Global:Global,
+
       rinfo: {}, //这个会议室的信息
 
       selectedDate: {}, //上一个页面传来的选择的日期，后面好像没用了
@@ -164,7 +170,7 @@ export default {
       //验证是否锁
       // this.checkLockRoom(function(){
       self.$router.push({
-        path: "/mindex/mindexBook/mindexBasic",
+        path: "/mlogin/mindex/mindexBook/mindexBasic",
         query: {
           data: self.$data
         }
