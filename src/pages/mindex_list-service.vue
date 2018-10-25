@@ -2,8 +2,8 @@
   <div class="warp_main">
     <ul class="mlist_tab" style="padding-right:40px;">
       <li class="mlist_tab_act" id="waitingOrder" v-on:click="loadClick">待接单</li>
-      <li id="passOrder" v-on:click="loadClick">服务中</li>
       <li id="waitingDocking" v-on:click="loadClick">待对接</li>
+      <li id="passOrder" v-on:click="loadClick">服务中</li>
       <li id="repulshOrder" v-on:click="loadClick">已完成</li>
     </ul>
     <div class="mindex_title ac" style="margin: 5px;"><span class="iconfont icon-shaixuan" id="openModal" @click="openModal"></span></div>
@@ -79,6 +79,7 @@
         //筛选条件
         modalName: "",
 
+        nowStateNum:"",
         nowState: "待接单",
       };
     },
@@ -87,7 +88,11 @@
       this.initSome()
     },
     activated() {
-      this.waitingOrderMet(1, this.nowState);
+      if(this.nowStateNum==4){
+        this.getWaitingDockingList()
+      }else{
+        this.waitingOrderMet(this.nowStateNum, this.nowState);
+      }
     },
     methods: {
       initSome() {
@@ -176,10 +181,11 @@
               );
               self.beginTime.push(begintimeString);
               self.endTime.push(realEndtimeString);
-              self.orderState = "待对接";
+              self.orderState = stateText
             }
 
-            self.nowState = "待对接"
+            self.nowStateNum=stateValueForm
+            self.nowState = stateText
           })
           .catch(function (res) {
             console.log(res)
@@ -189,7 +195,7 @@
       },
       //获取待对接列表
       getWaitingDockingList() {
-        let self=this
+        let self = this
         let postData = {
           beginOtime: null,
           endOtime: null,
@@ -209,9 +215,9 @@
           .then(function (res) {
             Global.closeLoading()
             console.log(res)
-            self.orderList = res.data;
+            self.orderList = res.data.list;
             console.log(self.orderList)
-            let tempArry = res.data;
+            let tempArry = res.data.list;
             for (let index = 0; index < tempArry.length; index++) {
               let begintime = tempArry[index].ocbegintime; //开始时间
               let endtime = tempArry[index].ocendtime; //结束时间
@@ -226,6 +232,7 @@
               self.orderState = "待对接";
             }
 
+            self.nowStateNum = 4
             self.nowState = "待对接"
           })
           .catch(function (res) {

@@ -20,7 +20,8 @@
             <tr>
               <td class="table_name">会议时间</td>
               <td>
-                <input class="mindex_input form-control" id='datetime' type="type" name="" v-model="time" readonly="readonly" style="background-color:#fff;border:none;outline:none;box-shadow:none;padding-left:0;color:#000;">
+                <input class="mindex_input form-control" id='datetime' type="type" name="" v-model="time" readonly="readonly"
+                  style="background-color:#fff;border:none;outline:none;box-shadow:none;padding-left:0;color:#000;">
               </td>
             </tr>
             <!-- 重复 -->
@@ -167,6 +168,10 @@
       <!-- orderstate;//订单状态(0.以取消 1.未取消  2.已完成   数据库默认未取消为1) -->
       <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='service'&&Number(queryInfo.orderstate)!==0">
         <button class="blueBg" id="submitTakeOrderBtn" v-cloak v-if="Number(queryInfo.otakeorder)==1" @click="submitTakeOrder">接单</button>
+        <button class="blueBg" id="submitDockingBtn" v-cloak v-if="Number(queryInfo.otakeorder)==2&&
+                      dataArry[0]&&
+                      dataArry[0].ocdockingstate==1&&
+                      Number(queryInfo.joinstate)==0" @click="submitDocking">对接</button>
         <template v-cloak v-if="Number(queryInfo.otakeorder)==3">
           <button class="whiteBg" @click="openGoodPage">修改物品</button>
           <button class="blueBg" id="submitChangeGood" @click="submitChangeGood">确认</button>
@@ -320,593 +325,274 @@
 </template>
 
 <script>
-//----------------------------------------------------------------------
-export default {
-  name: "morderContentBase",
-  data() {
-    return {
-      Global:Global,
+  //----------------------------------------------------------------------
+  export default {
+    name: "morderContentBase",
+    data() {
+      return {
+        Global: Global,
 
-      queryInfo: {}, //页面传值item
+        queryInfo: {}, //页面传值item
 
-      ocid: 0,
-      oid: 0,
-      rid: 0,
-      ocsourcename: "",
-      rname: "",
-      ocnum: 0,
-      time: "",
-      ocreservename: "",
-      ocreservephone: "",
-      ocusename: "",
-      ocusephone: "",
-      // ocdockingstate: 2, //默认不重复
+        ocid: 0,
+        oid: 0,
+        rid: 0,
+        ocsourcename: "",
+        rname: "",
+        ocnum: 0,
+        time: "",
+        ocreservename: "",
+        ocreservephone: "",
+        ocusename: "",
+        ocusephone: "",
+        // ocdockingstate: 2, //默认不重复
 
-      dataArry: [], //data总数数据
-      ag: [], //增值物品数组 dataArry分支
-      bg: [], //基础物品数组 dataArry分支
+        dataArry: [], //data总数数据
+        ag: [], //增值物品数组 dataArry分支
+        bg: [], //基础物品数组 dataArry分支
 
-      cancleContent: "", //取消原因内容
+        cancleContent: "", //取消原因内容
 
-      /*按钮状态*/
-      yesB: true,
-      noB: false,
-      yesc: true,
-      noc: false,
-      leftButtonText: "", //左侧按钮显示文字
-      rightButtonText: "", //右侧按钮显示文字
-      right: "", //权限
-      opassstate: 3, //假设为3，该值是有上一个页面传来
-      repulseContent: "", //拒绝原因
+        /*按钮状态*/
+        yesB: true,
+        noB: false,
+        yesc: true,
+        noc: false,
+        leftButtonText: "", //左侧按钮显示文字
+        rightButtonText: "", //右侧按钮显示文字
+        right: "", //权限
+        opassstate: 3, //假设为3，该值是有上一个页面传来
+        repulseContent: "", //拒绝原因
 
-      //指派服务人员页面
-      showSerPage: false,
-      serPerArr: [],
-      selectedSerPer: [], //选择的服务人员的index集合
-      // selectedSerPerReal:[], //选择的服务人员item
+        //指派服务人员页面
+        showSerPage: false,
+        serPerArr: [],
+        selectedSerPer: [], //选择的服务人员的index集合
+        // selectedSerPerReal:[], //选择的服务人员item
 
-      //指定对接人员页面
-      showDockingPage: false,
-      selectedDockingPer: {}, //选择的对接人员item
+        //指定对接人员页面
+        showDockingPage: false,
+        selectedDockingPer: {}, //选择的对接人员item
 
-      //修改会议物品页面
-      hasChangeGood: false, //是否修改物品了
-      showChangeGoodPage: false,
-      basicGoodArr: [],
-      addedGoodArr: [],
-      basicLoaded: false,
-      addedLoaded: false,
-      selectedBasicIndex: [], //目前没用
-      selectedAddedIndex: [], //目前没用
-      selectedBasicGoodArr: [], //选中的基础物品
-      selectedAddedGoodArr: [] //选中的增值物品
-    };
-  },
-  // watch:{
-  //   selectedDockingPer(){
-  //     console.log(this.selectedDockingPer)
-  //   }
-  // },
-  computed: {
-    selectedSerPerReal() {
-      //选择的服务人员
-      //选择的服务人员item
-      let self = this;
-      let arr = this.serPerArr.filter(function(obj, index) {
-        return self.selectedSerPer.indexOf(index) > -1;
-      });
-      return arr;
-    }
-  },
-  mounted() {
-    this.getPageInfo();
-    this.initDo();
-  },
-  activated(){
-    if(localStorage.getItem("queryInfo")&&localStorage.getItem("queryInfo")!==""){
-      console.log(11)
-      let item=JSON.parse(localStorage.getItem("queryInfo"))
-      this.queryInfo = item;
-      localStorage.setItem("queryInfo","")
-
-      this.initDo();
-    }else{
-      console.log(22)
+        //修改会议物品页面
+        hasChangeGood: false, //是否修改物品了
+        showChangeGoodPage: false,
+        basicGoodArr: [],
+        addedGoodArr: [],
+        basicLoaded: false,
+        addedLoaded: false,
+        selectedBasicIndex: [], //目前没用
+        selectedAddedIndex: [], //目前没用
+        selectedBasicGoodArr: [], //选中的基础物品
+        selectedAddedGoodArr: [] //选中的增值物品
+      };
+    },
+    // watch:{
+    //   selectedDockingPer(){
+    //     console.log(this.selectedDockingPer)
+    //   }
+    // },
+    computed: {
+      selectedSerPerReal() {
+        //选择的服务人员
+        //选择的服务人员item
+        let self = this;
+        let arr = this.serPerArr.filter(function (obj, index) {
+          return self.selectedSerPer.indexOf(index) > -1;
+        });
+        return arr;
+      }
+    },
+    mounted() {
       this.getPageInfo();
       this.initDo();
-    }
-  },
-  methods: {
-    //页面传值获取数据
-    getPageInfo() {
-      let item = this.$route.query.item;
-      console.log(item);
-      this.queryInfo = item;
     },
-    //页面加载
-    initDo() {
-      let self = this;
-      let ocidData = this.$route.query.ocid;
-      this.ocid = ocidData;
-      let postData = {
-        ocid: ocidData
-      };
-      Global.openLoading();
-      this.axios
-        .post(Global.host + "/order/selectOneInfo", this.qs.stringify(postData))
-        .then(function(res) {
-          Global.closeLoading();
-          console.log(res);
-          self.dataArry = res.data;
-          console.log(self.dataArry);
+    activated() {
+      if (localStorage.getItem("queryInfo") && localStorage.getItem("queryInfo") !== "") {
+        console.log(11)
+        let item = JSON.parse(localStorage.getItem("queryInfo"))
+        this.queryInfo = item;
+        localStorage.setItem("queryInfo", "")
 
-          /*基础信息*/
-          let baseInfo = self.dataArry[0];
-          console.log(baseInfo);
-
-          self.ocsourcename = baseInfo.ocsourcename;
-          self.ocnum = baseInfo.ocnum;
-          self.ocreservename = baseInfo.ocreservename;
-          self.ocreservephone = baseInfo.ocreservephone;
-          self.ocusename = baseInfo.ocusename;
-          self.ocusephone = baseInfo.ocusephone;
-          self.rname = self.dataArry[4]; //会议室名称
-          self.oid = baseInfo.oid;
-          //重复？？？
-          // self.ocdockingstate = Number(baseInfo.ocdockingstate);
-
-          let beginTime = baseInfo.ocbegintime;
-          let endTime = baseInfo.ocendtime;
-          let kaishi = Global.dateToFormat(new Date(beginTime));
-          let jieshu = Global.dateToFormat(new Date(endTime));
-          let jieshuReal = jieshu.substr(11, jieshu.length);
-          self.time = kaishi + "-" + jieshuReal;
-
-          /*基础物品信息列表*/
-          self.bg = self.dataArry[1].map(function(obj) {
-            obj.bgname = obj.boname;
-            obj.mNum = obj.bonum;
-            return obj;
-          });
-          /*增值物品信息列表*/
-          self.ag = self.dataArry[2].map(function(obj) {
-            obj.agname = obj.aoname;
-            obj.mNum = obj.aonum;
-            obj.agprice = obj.aoprice;
-            return obj;
-          });
-
-          self.rid = baseInfo.rid;
-          /*用户权限控制*/
-          let session = localStorage.getItem("mUserInfo");
-          let mySession = JSON.parse(session);
-          let right = JSON.parse(localStorage.getItem("userRight"));
-          // right = 1; //测试临时数据
-          self.right = Number(right);
-          console.log(self.right);
-          /*更改按钮点击状态*/
-          let state = self.dataArry[6];
-          console.log(state);
-          if (state == 0) {
-            self.noB = true;
-            self.yesB = false;
-          }
-          console.log(self.dataArry[3]);
-          if (self.dataArry[3] != null) {
-            (self.yesc = false), (self.noc = true);
-          }
-          /*路由传值，获得状态opassstate*/
-          if (self.opassstate != 3) {
-            self.noB = true;
-            self.yesB = false;
-            (self.yesc = false), (self.noc = true);
-          }
-          //修改左侧和右侧按钮文字
-          switch (self.right) {
-            case 1:
-              self.leftButtonText = "评价";
-              self.rightButtonText = "取消";
-              break;
-            case 2:
-              self.leftButtonText = "通过";
-              self.rightButtonText = "拒绝";
-              break;
-            case 3:
-              break;
-            case 4:
-              // alert("该用户没有权限")
-              self.leftButtonText = "评价";
-              self.rightButtonText = "取消";
-              break;
-            case 5:
-              //管理员页面？
-              break;
-            default:
-              break;
-          }
-        })
-        .catch(function(res) {
-          Global.closeLoading();
-        });
-    },
-    //去补充信息页面
-    goSupplyPage(){
-      localStorage.setItem("queryInfo",JSON.stringify(this.queryInfo))
-
-      this.$router.push({
-        path: "/mlogin/memberlist/morderContent/base/supply",
-        query: {
-          ocid: this.ocid,
-        }
-      });
-    },
-    goComment() {
-      let self = this;
-      if (this.dataArry[3] == null) {
-        // this.unlockRoom(function(){
-        self.$router.push({
-          path: "/mlogin/memberlist/morderContent/base/mreview",
-          query: {
-            ocid: this.ocid,
-            rid: this.rid
-          }
-        });
-        // })
+        this.initDo();
       } else {
-        alert("你已经评论过啦");
+        console.log(22)
+        this.getPageInfo();
+        this.initDo();
       }
     },
-    goCancleTan() {
-      /*弹出弹窗*/
-      $("#mySearch").modal("show");
-    },
-    goCancle() {
-      let self = this;
-      //先验证一下
-      if (this.cancleContent.trim() == "") {
-        alert("请输入取消原因");
-        return;
-      }
-
-      let result = confirm("确定取消该订单？");
-      if (!result) {
-        return;
-      }
-      let postData = {
-        ocid: self.ocid,
-        cancleContent: self.cancleContent
-      };
-      console.log(postData);
-      $("#realCancelBtn").addClass("eventsDisabled");
-      $.ajax({
-        type: "POST",
-        url: "/order/memberUpdateOrder",
-        data: postData,
-        success: function(res) {
-          $("#realCancelBtn").removeClass("eventsDisabled");
-          console.log(res);
-          if (Number(res) == 1) {
-            alert("操作成功");
-            $("#mySearch").modal("hide");
-
-            // self.unlockRoom(function(){
-            self.$router.go(-1);
-            // })
-          } else {
-            alert("操作失败");
-          }
-        }
-      });
-    },
-    passCheck() {
-      let self = this;
-      let result = confirm("确定通过该订单？");
-      if (!result) {
-        return;
-      }
-      //取出oid
-      let oid = this.oid;
-      let pass = 2;
-      let postData = {
-        oid: oid,
-        pass: pass
-      };
-      console.log(postData);
-      $("#realPassBtn").addClass("eventsDisabled");
-      $.ajax({
-        type: "POST",
-        url: "/order/approveOrder",
-        data: postData,
-        success: function(res) {
-          $("#realPassBtn").removeClass("eventsDisabled");
-          console.log(res)
-          if (Number(res) == 1) {
-            alert("操作成功");
-
-            // self.unlockRoom(function(){
-            self.$router.go(-1);
-            // })
-          } else {
-            alert("操作失败");
-          }
-        }
-      });
-    },
-    openRepulse() {
-      /*弹出弹窗*/
-      $("#repulse").modal("show");
-    },
-    goRepulse() {
-      let self = this;
-      // 先验证一下
-      if (this.repulseContent.trim() == "") {
-        alert("请输入拒绝原因");
-        return;
-      }
-
-      let result = confirm("确定拒绝该订单？");
-      if (!result) {
-        return;
-      }
-      //取出oid
-      let oid = this.oid;
-      let pass = 1;
-      let message = this.repulseContent;
-      let postData = {
-        oid: oid,
-        pass: pass,
-        message: message
-      };
-      $("#realRepulseBtn").addClass("eventsDisabled");
-      $.ajax({
-        type: "POST",
-        url: "/order/approveOrder",
-        data: postData,
-        success: function(res) {
-          $("#realRepulseBtn").removeClass("eventsDisabled");
-          //console.log(res)
-          if (Number(res) == 1) {
-            alert("操作成功");
-            $("#repulse").modal("hide");
-
-            // self.unlockRoom(function(){
-            self.$router.go(-1);
-            // })
-          } else {
-            alert("操作失败");
-          }
-        }
-      });
-    },
-    leftButton() {
-      let right = this.right;
-      switch (right) {
-        case 1:
-          this.goComment();
-          break;
-        case 2:
-          //通过按钮
-          this.passCheck();
-          break;
-        case 3:
-          break;
-        case 4:
-          // alert("该用户没有权限")
-          this.goComment();
-          break;
-        case 5:
-          //管理员页面？
-          break;
-        default:
-          break;
-      }
-    },
-    rightButton() {
-      let right = this.right;
-      switch (right) {
-        case 1:
-          this.goCancleTan(); //取消按钮
-          break;
-        case 2:
-          //拒绝按钮
-          this.repulse();
-          break;
-        case 3:
-          break;
-        case 4:
-          // alert("该用户没有权限")
-          this.goCancleTan(); //取消按钮
-          break;
-        case 5:
-          //管理员页面？
-          break;
-        default:
-          break;
-      }
-    },
-    //返回上一个路由
-    routerGoback() {
-      let self = this;
-      // this.unlockRoom(function(){
-      self.$router.go(-1);
-      // })
-    },
-    //去指派人员页面
-    goAssignSer() {
-      let self = this;
-      if (this.serPerArr.length == 0) {
-        this.getSerPerArr(function() {
-          self.showSerPage = true;
-        });
-      } else {
-        this.showSerPage = true;
-      }
-    },
-    //获取服务人员名单
-    getSerPerArr(callback) {
-      let self = this;
-      Global.openLoading();
-      this.axios
-        .get(Global.host + "/servicepeo/selectServicepeoByOther")
-        .then(function(res) {
-          Global.closeLoading();
-          console.log(res);
-          let arr = res.data.staffList;
-          if (arr.length == 0) {
-            alert("当前无人员可选择");
-            return;
-          } else {
-            self.serPerArr = arr;
-            if (callback) {
-              callback();
-            }
-          }
-        })
-        .catch(function(res) {
-          Global.closeLoading();
-        });
-    },
-    //关闭指派服务人员页面 并删除已选择的服务人员
-    closeSerPerPage() {
-      this.selectedSerPer = [];
-      this.showSerPage = false;
-    },
-    //指派服务人员-确认
-    confirmSerPer() {
-      this.showSerPage = false;
-    },
-    //ajax指派服务人员
-    submitAssignSer(callback) {
-      let self = this;
-      if (this.selectedSerPer.length > 0) {
-        let idArr = this.selectedSerPerReal.map(function(obj) {
-          return obj.id;
-        });
+    methods: {
+      //页面传值获取数据
+      getPageInfo() {
+        let item = this.$route.query.item;
+        console.log(item);
+        this.queryInfo = item;
+      },
+      //页面加载
+      initDo() {
+        let self = this;
+        let ocidData = this.$route.query.ocid;
+        this.ocid = ocidData;
         let postData = {
-          ocid: Number(this.ocid),
-          id: idArr,
-          sertype: 1
+          ocid: ocidData
         };
-        console.log(postData);
-        $.post(
-          Global.host + "/servicepeo/insertServiceOrder",
-          postData,
-          function(res) {
+        Global.openLoading();
+        this.axios
+          .post(Global.host + "/order/selectOneInfo", this.qs.stringify(postData))
+          .then(function (res) {
             Global.closeLoading();
             console.log(res);
-            if (res && Number(res) == 1) {
-              if (callback) {
-                callback();
-              }
-            } else {
-              alert("指派服务人员失败");
-              return;
+            self.dataArry = res.data;
+            console.log(self.dataArry);
+
+            /*基础信息*/
+            let baseInfo = self.dataArry[0];
+            console.log(baseInfo);
+
+            self.ocsourcename = baseInfo.ocsourcename;
+            self.ocnum = baseInfo.ocnum;
+            self.ocreservename = baseInfo.ocreservename;
+            self.ocreservephone = baseInfo.ocreservephone;
+            self.ocusename = baseInfo.ocusename;
+            self.ocusephone = baseInfo.ocusephone;
+            self.rname = self.dataArry[4]; //会议室名称
+            self.oid = baseInfo.oid;
+            //重复？？？
+            // self.ocdockingstate = Number(baseInfo.ocdockingstate);
+
+            let beginTime = baseInfo.ocbegintime;
+            let endTime = baseInfo.ocendtime;
+            let kaishi = Global.dateToFormat(new Date(beginTime));
+            let jieshu = Global.dateToFormat(new Date(endTime));
+            let jieshuReal = jieshu.substr(11, jieshu.length);
+            self.time = kaishi + "-" + jieshuReal;
+
+            /*基础物品信息列表*/
+            self.bg = self.dataArry[1].map(function (obj) {
+              obj.bgname = obj.boname;
+              obj.mNum = obj.bonum;
+              return obj;
+            });
+            /*增值物品信息列表*/
+            self.ag = self.dataArry[2].map(function (obj) {
+              obj.agname = obj.aoname;
+              obj.mNum = obj.aonum;
+              obj.agprice = obj.aoprice;
+              return obj;
+            });
+
+            self.rid = baseInfo.rid;
+            /*用户权限控制*/
+            let session = localStorage.getItem("mUserInfo");
+            let mySession = JSON.parse(session);
+            let right = JSON.parse(localStorage.getItem("userRight"));
+            // right = 1; //测试临时数据
+            self.right = Number(right);
+            console.log(self.right);
+            /*更改按钮点击状态*/
+            let state = self.dataArry[6];
+            console.log(state);
+            if (state == 0) {
+              self.noB = true;
+              self.yesB = false;
             }
-          }
-        );
-      } else {
-        if (callback) {
-          callback();
-        }
-      }
-    },
-    //ajax指定对接人员
-    submitAssignDocking(callback) {
-      let self = this;
-      if (JSON.stringify(this.selectedDockingPer) !== "{}") {
-        let idArr = [];
-        idArr[0] = this.selectedDockingPer.id;
-        let postData = {
-          ocid: Number(this.ocid),
-          id: idArr,
-          sertype: 2
-        };
-        console.log(postData);
-        $.ajax({
-          type: "POST",
-          url: Global.host + "/servicepeo/insertServiceOrder",
-          data: postData,
-          success: function(res) {
-            console.log(res);
-            if (res && Number(res) == 1) {
-              if (callback) {
-                callback();
-              }
-            } else {
-              alert("指定对接人员失败");
-              return;
+            console.log(self.dataArry[3]);
+            if (self.dataArry[3] != null) {
+              (self.yesc = false), (self.noc = true);
             }
+            /*路由传值，获得状态opassstate*/
+            if (self.opassstate != 3) {
+              self.noB = true;
+              self.yesB = false;
+              (self.yesc = false), (self.noc = true);
+            }
+            //修改左侧和右侧按钮文字
+            switch (self.right) {
+              case 1:
+                self.leftButtonText = "评价";
+                self.rightButtonText = "取消";
+                break;
+              case 2:
+                self.leftButtonText = "通过";
+                self.rightButtonText = "拒绝";
+                break;
+              case 3:
+                break;
+              case 4:
+                // alert("该用户没有权限")
+                self.leftButtonText = "评价";
+                self.rightButtonText = "取消";
+                break;
+              case 5:
+                //管理员页面？
+                break;
+              default:
+                break;
+            }
+          })
+          .catch(function (res) {
+            Global.closeLoading();
+          });
+      },
+      //去补充信息页面
+      goSupplyPage() {
+        localStorage.setItem("queryInfo", JSON.stringify(this.queryInfo))
+
+        this.$router.push({
+          path: "/mlogin/memberlist/morderContent/base/supply",
+          query: {
+            ocid: this.ocid,
           }
         });
-      } else {
-        if (callback) {
-          callback();
+      },
+      goComment() {
+        let self = this;
+        if (this.dataArry[3] == null) {
+          // this.unlockRoom(function(){
+          self.$router.push({
+            path: "/mlogin/memberlist/morderContent/base/mreview",
+            query: {
+              ocid: this.ocid,
+              rid: this.rid
+            }
+          });
+          // })
+        } else {
+          alert("你已经评论过啦");
         }
-      }
-    },
-    //ajax接单function
-    submitTakeOrderFunc(callback) {
-      var postData = {
-        oid: Number(this.ocid),
-        otakeorder: 2 //（otakeorder状态为3）或者接单按钮（otakeorder状态为2） 数据库默认为1（未接单）
-      };
-      console.log(postData);
-      $.ajax({
-        type: "POST",
-        url: Global.host + "/order/updateServiceComplete",
-        data: postData,
-        success: function(res) {
-          console.log(res);
-          if (callback) {
-            callback(res);
-          }
+      },
+      goCancleTan() {
+        /*弹出弹窗*/
+        $("#mySearch").modal("show");
+      },
+      goCancle() {
+        let self = this;
+        //先验证一下
+        if (this.cancleContent.trim() == "") {
+          alert("请输入取消原因");
+          return;
         }
-      });
-    },
-    //ajax接单
-    submitTakeOrder() {
-      let self = this;
-      let confirmStr = "";
-      if (Number(this.dataArry[0].ocdockingstate) == 2) {
-        //不需要对接
-        if (this.selectedSerPer.length == 0) {
-          confirmStr = "当前未选择服务人员，确认提交？";
-        }
-      } else if (Number(this.dataArry[0].ocdockingstate) == 1) {
-        //需要对接
-        if (
-          this.selectedSerPer.length == 0 &&
-          JSON.stringify(this.selectedDockingPer) == "{}"
-        ) {
-          //服务人员和对接人员 都没选择
-          confirmStr = "当前未选择服务人员和对接人员，确认提交？";
-        } else if (this.selectedSerPer.length == 0) {
-          //没选服务人员，选了对接人员
-          confirmStr = "当前未选择服务人员，确认提交？";
-        } else if (JSON.stringify(this.selectedDockingPer) == "{}") {
-          //选了服务人员，没选对接人员
-          confirmStr = "当前未选择对接人员，确认提交？";
-        }
-      }
-      if (confirmStr !== "") {
-        var result = confirm(confirmStr);
+
+        let result = confirm("确定取消该订单？");
         if (!result) {
           return;
         }
-      }
-
-      //ajax 先指派服务人员 再指定对接人员 再接单
-      // Global.openLoading()
-      console.log("开始ajax");
-      $("#submitTakeOrderBtn").addClass("eventsDisabled");
-      this.submitAssignSer(function() {
-        self.submitAssignDocking(function() {
-          self.submitTakeOrderFunc(function(res) {
-            // Global.closeLoading()
-            $("#submitTakeOrderBtn").removeClass("eventsDisabled");
+        let postData = {
+          ocid: self.ocid,
+          cancleContent: self.cancleContent
+        };
+        console.log(postData);
+        $("#realCancelBtn").addClass("eventsDisabled");
+        $.ajax({
+          type: "POST",
+          url: "/order/memberUpdateOrder",
+          data: postData,
+          success: function (res) {
+            $("#realCancelBtn").removeClass("eventsDisabled");
             console.log(res);
-            if (res && Number(res) == 1) {
-              alert("接单成功");
+            if (Number(res) == 1) {
+              alert("操作成功");
+              $("#mySearch").modal("hide");
 
               // self.unlockRoom(function(){
               self.$router.go(-1);
@@ -914,322 +600,676 @@ export default {
             } else {
               alert("操作失败");
             }
-          });
+          }
         });
-      });
-    },
+      },
+      passCheck() {
+        let self = this;
+        let result = confirm("确定通过该订单？");
+        if (!result) {
+          return;
+        }
+        //取出oid
+        let oid = this.oid;
+        let pass = 2;
+        let postData = {
+          oid: oid,
+          pass: pass
+        };
+        console.log(postData);
+        $("#realPassBtn").addClass("eventsDisabled");
+        $.ajax({
+          type: "POST",
+          url: "/order/approveOrder",
+          data: postData,
+          success: function (res) {
+            $("#realPassBtn").removeClass("eventsDisabled");
+            console.log(res)
+            if (Number(res) == 1) {
+              alert("操作成功");
 
-    //修改会议物品页面-------------------------------------------------
-    //打开修改物品页面
-    openGoodPage() {
-      if (!this.basicLoaded) {
-        this.getBasicGoodArr();
-      }
-      if (!this.addedLoaded) {
-        this.getAddedGoodArr();
-      }
-      this.showChangeGoodPage = true;
-    },
-    //获取基础物品
-    getBasicGoodArr() {
-      let self = this;
-      Global.openLoading();
-      this.axios
-        .get(Global.host + "/order/selectBgList")
-        .then(function(res) {
-          self.basicLoaded = true;
-          if (self.basicLoaded && self.addedLoaded) {
+              // self.unlockRoom(function(){
+              self.$router.go(-1);
+              // })
+            } else {
+              alert("操作失败");
+            }
+          }
+        });
+      },
+      openRepulse() {
+        /*弹出弹窗*/
+        $("#repulse").modal("show");
+      },
+      goRepulse() {
+        let self = this;
+        // 先验证一下
+        if (this.repulseContent.trim() == "") {
+          alert("请输入拒绝原因");
+          return;
+        }
+
+        let result = confirm("确定拒绝该订单？");
+        if (!result) {
+          return;
+        }
+        //取出oid
+        let oid = this.oid;
+        let pass = 1;
+        let message = this.repulseContent;
+        let postData = {
+          oid: oid,
+          pass: pass,
+          message: message
+        };
+        $("#realRepulseBtn").addClass("eventsDisabled");
+        $.ajax({
+          type: "POST",
+          url: "/order/approveOrder",
+          data: postData,
+          success: function (res) {
+            $("#realRepulseBtn").removeClass("eventsDisabled");
+            //console.log(res)
+            if (Number(res) == 1) {
+              alert("操作成功");
+              $("#repulse").modal("hide");
+
+              // self.unlockRoom(function(){
+              self.$router.go(-1);
+              // })
+            } else {
+              alert("操作失败");
+            }
+          }
+        });
+      },
+      leftButton() {
+        let right = this.right;
+        switch (right) {
+          case 1:
+            this.goComment();
+            break;
+          case 2:
+            //通过按钮
+            this.passCheck();
+            break;
+          case 3:
+            break;
+          case 4:
+            // alert("该用户没有权限")
+            this.goComment();
+            break;
+          case 5:
+            //管理员页面？
+            break;
+          default:
+            break;
+        }
+      },
+      rightButton() {
+        let right = this.right;
+        switch (right) {
+          case 1:
+            this.goCancleTan(); //取消按钮
+            break;
+          case 2:
+            //拒绝按钮
+            this.repulse();
+            break;
+          case 3:
+            break;
+          case 4:
+            // alert("该用户没有权限")
+            this.goCancleTan(); //取消按钮
+            break;
+          case 5:
+            //管理员页面？
+            break;
+          default:
+            break;
+        }
+      },
+      //返回上一个路由
+      routerGoback() {
+        let self = this;
+        // this.unlockRoom(function(){
+        self.$router.go(-1);
+        // })
+      },
+      //去指派人员页面
+      goAssignSer() {
+        let self = this;
+        if (this.serPerArr.length == 0) {
+          this.getSerPerArr(function () {
+            self.showSerPage = true;
+          });
+        } else {
+          this.showSerPage = true;
+        }
+      },
+      //获取服务人员名单
+      getSerPerArr(callback) {
+        let self = this;
+        Global.openLoading();
+        this.axios
+          .get(Global.host + "/servicepeo/selectServicepeoByOther")
+          .then(function (res) {
             Global.closeLoading();
-          }
-          console.log(res);
-          self.basicGoodArr = res.data.map(function(obj) {
-            obj.mNum = 1;
-            return obj;
-          });
-        })
-        .catch(function(res) {
-          console.log(res);
-        });
-    },
-    //获取增值物品
-    getAddedGoodArr() {
-      let self = this;
-      Global.openLoading();
-      this.axios
-        .get(Global.host + "/order/selectAgList")
-        .then(function(res) {
-          self.addedLoaded = true;
-          if (self.basicLoaded && self.addedLoaded) {
+            console.log(res);
+            let arr = res.data.staffList;
+            if (arr.length == 0) {
+              alert("当前无人员可选择");
+              return;
+            } else {
+              self.serPerArr = arr;
+              if (callback) {
+                callback();
+              }
+            }
+          })
+          .catch(function (res) {
             Global.closeLoading();
-          }
-          console.log(res);
-          self.addedGoodArr = res.data.map(function(obj) {
-            obj.mNum = 1;
-            return obj;
           });
-        })
-        .catch(function(res) {
-          console.log(res);
-        });
-    },
-    //关闭修改物品页面
-    closeGoodPage() {
-      // //清空
-      // this.selectedBasicGoodArr=[]
-      // this.selectedAddedGoodArr=[]
-
-      this.showChangeGoodPage = false;
-    },
-    //最后提交修改物品
-    confirmGood() {
-      //（查订单回来的叫boname，查物品回来的叫bgname）
-      this.bg = this.selectedBasicGoodArr;
-      this.ag = this.selectedAddedGoodArr;
-
-      this.hasChangeGood = true;
-      this.showChangeGoodPage = false;
-    },
-    //最后点击确定 ajax修改物品
-    submitChangeGood() {
-      let self = this;
-      if (!this.hasChangeGood) {
-        return;
-      }
-      let result = confirm("确认修改物品");
-      if (!result) {
-        return;
-      }
-      //基础物品
-      let bonameArr;
-      let bonumArr;
-      if (this.selectedBasicGoodArr.length == 0) {
-        bonameArr = null;
-        bonumArr = null;
-      } else {
-        bonameArr = this.selectedBasicGoodArr.map(function(obj) {
-          return obj.bgname;
-        });
-        bonumArr = this.selectedBasicGoodArr.map(function(obj) {
-          return obj.mNum;
-        });
-      }
-      //增值物品
-      let aonameArr;
-      let aonumArr;
-      let aopriceArr;
-      if (this.selectedAddedGoodArr.length == 0) {
-        aonameArr = null;
-        aonumArr = null;
-        aopriceArr = null;
-      } else {
-        aonameArr = this.selectedAddedGoodArr.map(function(obj) {
-          return obj.agname;
-        });
-        aonumArr = this.selectedAddedGoodArr.map(function(obj) {
-          return obj.mNum;
-        });
-        aopriceArr = this.selectedAddedGoodArr.map(function(obj) {
-          return obj.agprice;
-        });
-      }
-
-      let postData = {
-        ocid: Number(this.ocid),
-
-        boname: bonameArr,
-        bonum: bonumArr,
-
-        aoname: aonameArr,
-        aonum: aonumArr,
-        aoprice: aopriceArr
-      };
-      console.log(postData);
-      $("#submitChangeGood").addClass("eventsDisabled");
-      this.axios
-        .post(
-          Global.host + "/order/updateGoodsOrder",
-          this.qs.stringify(postData)
-        )
-        .then(function(res) {
-          $("#submitChangeGood").removeClass("eventsDisabled");
-          console.log(res);
-          if (res.data && Number(res.data) == 1) {
-            alert("操作成功");
-
-            // self.unlockRoom(function(){
-            self.$router.go(-1);
-            // self.$router.push({
-            //     path:"/mlogin/mindex/mindexBook/mindexBasic",
-            //     query:{
-            //       data:self.$data
-            //     }
-            // })
-            // })
+      },
+      //关闭指派服务人员页面 并删除已选择的服务人员
+      closeSerPerPage() {
+        this.selectedSerPer = [];
+        this.showSerPage = false;
+      },
+      //指派服务人员-确认
+      confirmSerPer() {
+        this.showSerPage = false;
+      },
+      //ajax指派服务人员
+      submitAssignSer(callback) {
+        let self = this;
+        if (this.selectedSerPer.length > 0) {
+          let idArr = this.selectedSerPerReal.map(function (obj) {
+            return obj.id;
+          });
+          let postData = {
+            ocid: Number(this.ocid),
+            id: idArr,
+            sertype: 1
+          };
+          console.log(postData);
+          $.post(
+            Global.host + "/servicepeo/insertServiceOrder",
+            postData,
+            function (res) {
+              Global.closeLoading();
+              console.log(res);
+              if (res && Number(res) == 1) {
+                if (callback) {
+                  callback();
+                }
+              } else {
+                alert("指派服务人员失败");
+                return;
+              }
+            }
+          );
+        } else {
+          if (callback) {
+            callback();
           }
-        })
-        .catch(function(res) {
-          $("#submitChangeGood").removeClass("eventsDisabled");
-          console.log(res);
+        }
+      },
+      //ajax指定对接人员
+      submitAssignDocking(callback) {
+        let self = this;
+        if (JSON.stringify(this.selectedDockingPer) !== "{}") {
+          let idArr = [];
+          idArr[0] = this.selectedDockingPer.id;
+          let postData = {
+            ocid: Number(this.ocid),
+            id: idArr,
+            sertype: 2
+          };
+          console.log(postData);
+          $.ajax({
+            type: "POST",
+            url: Global.host + "/servicepeo/insertServiceOrder",
+            data: postData,
+            success: function (res) {
+              console.log(res);
+              if (res && Number(res) == 1) {
+                if (callback) {
+                  callback();
+                }
+              } else {
+                alert("指定对接人员失败");
+                return;
+              }
+            }
+          });
+        } else {
+          if (callback) {
+            callback();
+          }
+        }
+      },
+      //ajax接单function
+      submitTakeOrderFunc(callback) {
+        var postData = {
+          oid: Number(this.oid),
+          otakeorder: 2 //（otakeorder状态为3）或者接单按钮（otakeorder状态为2） 数据库默认为1（未接单）
+        };
+        console.log(postData);
+        $.ajax({
+          type: "POST",
+          url: Global.host + "/order/updateServiceComplete",
+          data: postData,
+          success: function (res) {
+            console.log(res);
+            if (callback) {
+              callback(res);
+            }
+          }
         });
-    },
-    //点击加号
-    plusGood(item) {
-      item.mNum++;
-    },
-    //点击减号
-    minusGood(item) {
-      item.mNum--;
-      if (item.mNum == 0) {
-        item.mNum = 1;
-      }
-    },
-    //指定对接人员---------------------------
-    //打开对接人员选择页面
-    goAssignDocking() {
-      let self = this;
-      if (this.serPerArr.length == 0) {
-        this.getSerPerArr(function() {
-          self.showDockingPage = true;
+      },
+      //ajax接单
+      submitTakeOrder() {
+        let self = this;
+        let confirmStr = "";
+        if (Number(this.dataArry[0].ocdockingstate) == 2) {
+          //不需要对接
+          if (this.selectedSerPer.length == 0) {
+            confirmStr = "当前未选择服务人员，确认提交？";
+          }
+        } else if (Number(this.dataArry[0].ocdockingstate) == 1) {
+          //需要对接
+          if (
+            this.selectedSerPer.length == 0 &&
+            JSON.stringify(this.selectedDockingPer) == "{}"
+          ) {
+            //服务人员和对接人员 都没选择
+            confirmStr = "当前未选择服务人员和对接人员，确认提交？";
+          } else if (this.selectedSerPer.length == 0) {
+            //没选服务人员，选了对接人员
+            confirmStr = "当前未选择服务人员，确认提交？";
+          } else if (JSON.stringify(this.selectedDockingPer) == "{}") {
+            //选了服务人员，没选对接人员
+            confirmStr = "当前未选择对接人员，确认提交？";
+          }
+        }
+        if (confirmStr !== "") {
+          var result = confirm(confirmStr);
+          if (!result) {
+            return;
+          }
+        }
+
+        //ajax 先指派服务人员 再指定对接人员 再接单
+        // Global.openLoading()
+        console.log("开始ajax");
+        $("#submitTakeOrderBtn").addClass("eventsDisabled");
+        this.submitAssignSer(function () {
+          self.submitAssignDocking(function () {
+            self.submitTakeOrderFunc(function (res) {
+              // Global.closeLoading()
+              $("#submitTakeOrderBtn").removeClass("eventsDisabled");
+              console.log(res);
+              if (res && Number(res) == 1) {
+                alert("接单成功");
+
+                // self.unlockRoom(function(){
+                self.$router.go(-1);
+                // })
+              } else {
+                alert("操作失败");
+              }
+            });
+          });
         });
-      } else {
-        this.showDockingPage = true;
-      }
-    },
-    //点击对接人员页面确定
-    confirmDockingPer() {
-      this.showDockingPage = false;
-    },
-    //点击对接人员页面取消
-    closeDockingPerPage() {
-      this.selectedDockingPer = {};
-      this.showDockingPage = false;
-    }
-    // //给这个room解锁
-    // unlockRoom(callback){
-    //   console.log("解锁会议室")
-    //   let postData={
-    //     rid:Number(this.rid)
-    //   }
-    //   console.log(postData)
-    //   this.axios.post(Global.host+'/user/releaseRoom',this.qs.stringify(postData))
-    //   .then(function(res){
-    //     console.log(res)
-    //     callback()
-    //   })
-    //   .catch(function(res){
-    //     console.log(res)
-    //   })
+      },
+
+      //修改会议物品页面-------------------------------------------------
+      //打开修改物品页面
+      openGoodPage() {
+        if (!this.basicLoaded) {
+          this.getBasicGoodArr();
+        }
+        if (!this.addedLoaded) {
+          this.getAddedGoodArr();
+        }
+        this.showChangeGoodPage = true;
+      },
+      //获取基础物品
+      getBasicGoodArr() {
+        let self = this;
+        Global.openLoading();
+        this.axios
+          .get(Global.host + "/order/selectBgList")
+          .then(function (res) {
+            self.basicLoaded = true;
+            if (self.basicLoaded && self.addedLoaded) {
+              Global.closeLoading();
+            }
+            console.log(res);
+            self.basicGoodArr = res.data.map(function (obj) {
+              obj.mNum = 1;
+              return obj;
+            });
+          })
+          .catch(function (res) {
+            console.log(res);
+          });
+      },
+      //获取增值物品
+      getAddedGoodArr() {
+        let self = this;
+        Global.openLoading();
+        this.axios
+          .get(Global.host + "/order/selectAgList")
+          .then(function (res) {
+            self.addedLoaded = true;
+            if (self.basicLoaded && self.addedLoaded) {
+              Global.closeLoading();
+            }
+            console.log(res);
+            self.addedGoodArr = res.data.map(function (obj) {
+              obj.mNum = 1;
+              return obj;
+            });
+          })
+          .catch(function (res) {
+            console.log(res);
+          });
+      },
+      //关闭修改物品页面
+      closeGoodPage() {
+        // //清空
+        // this.selectedBasicGoodArr=[]
+        // this.selectedAddedGoodArr=[]
+
+        this.showChangeGoodPage = false;
+      },
+      //最后提交修改物品
+      confirmGood() {
+        //（查订单回来的叫boname，查物品回来的叫bgname）
+        this.bg = this.selectedBasicGoodArr;
+        this.ag = this.selectedAddedGoodArr;
+
+        this.hasChangeGood = true;
+        this.showChangeGoodPage = false;
+      },
+      //最后点击确定 ajax修改物品
+      submitChangeGood() {
+        let self = this;
+        if (!this.hasChangeGood) {
+          return;
+        }
+        let result = confirm("确认修改物品");
+        if (!result) {
+          return;
+        }
+        //基础物品
+        let bonameArr;
+        let bonumArr;
+        if (this.selectedBasicGoodArr.length == 0) {
+          bonameArr = null;
+          bonumArr = null;
+        } else {
+          bonameArr = this.selectedBasicGoodArr.map(function (obj) {
+            return obj.bgname;
+          });
+          bonumArr = this.selectedBasicGoodArr.map(function (obj) {
+            return obj.mNum;
+          });
+        }
+        //增值物品
+        let aonameArr;
+        let aonumArr;
+        let aopriceArr;
+        if (this.selectedAddedGoodArr.length == 0) {
+          aonameArr = null;
+          aonumArr = null;
+          aopriceArr = null;
+        } else {
+          aonameArr = this.selectedAddedGoodArr.map(function (obj) {
+            return obj.agname;
+          });
+          aonumArr = this.selectedAddedGoodArr.map(function (obj) {
+            return obj.mNum;
+          });
+          aopriceArr = this.selectedAddedGoodArr.map(function (obj) {
+            return obj.agprice;
+          });
+        }
+
+        let postData = {
+          ocid: Number(this.ocid),
+
+          boname: bonameArr,
+          bonum: bonumArr,
+
+          aoname: aonameArr,
+          aonum: aonumArr,
+          aoprice: aopriceArr
+        };
+        console.log(postData);
+        $("#submitChangeGood").addClass("eventsDisabled");
+        this.axios
+          .post(
+            Global.host + "/order/updateGoodsOrder",
+            this.qs.stringify(postData)
+          )
+          .then(function (res) {
+            $("#submitChangeGood").removeClass("eventsDisabled");
+            console.log(res);
+            if (res.data && Number(res.data) == 1) {
+              alert("操作成功");
+
+              self.$router.go(-1);
+            }
+          })
+          .catch(function (res) {
+            $("#submitChangeGood").removeClass("eventsDisabled");
+            console.log(res);
+          });
+      },
+      //点击加号
+      plusGood(item) {
+        item.mNum++;
+      },
+      //点击减号
+      minusGood(item) {
+        item.mNum--;
+        if (item.mNum == 0) {
+          item.mNum = 1;
+        }
+      },
+      //指定对接人员---------------------------
+      //打开对接人员选择页面
+      goAssignDocking() {
+        let self = this;
+        if (this.serPerArr.length == 0) {
+          this.getSerPerArr(function () {
+            self.showDockingPage = true;
+          });
+        } else {
+          this.showDockingPage = true;
+        }
+      },
+      //点击对接人员页面确定
+      confirmDockingPer() {
+        this.showDockingPage = false;
+      },
+      //点击对接人员页面取消
+      closeDockingPerPage() {
+        this.selectedDockingPer = {};
+        this.showDockingPage = false;
+      },
+      // //给这个room解锁
+      // unlockRoom(callback){
+      //   console.log("解锁会议室")
+      //   let postData={
+      //     rid:Number(this.rid)
+      //   }
+      //   console.log(postData)
+      //   this.axios.post(Global.host+'/user/releaseRoom',this.qs.stringify(postData))
+      //   .then(function(res){
+      //     console.log(res)
+      //     callback()
+      //   })
+      //   .catch(function(res){
+      //     console.log(res)
+      //   })
+      // },
+      //ajax对接
+      submitDocking() {
+        let self=this
+        let result=confirm("确认对接完成？")
+        if(!result){
+          return
+        }
+        let postData = {
+          oid: Number(this.oid),
+        }
+        console.log(postData)
+        $("#submitDockingBtn").removeClass("eventsDisabled");
+        this.axios
+          .post(
+            Global.host + "/order/completeJoin",
+            this.qs.stringify(postData)
+          )
+          .then(function (res) {
+            $("#submitDockingBtn").removeClass("eventsDisabled");
+            console.log(res);
+            if (res.data && Number(res.data) == 1) {
+              alert("操作成功");
+
+              self.$router.go(-1);
+            }
+          })
+          .catch(function (res) {
+            $("#submitDockingBtn").removeClass("eventsDisabled");
+            console.log(res);
+          });
+      },
+    } //methods end
+    // beforeDestroy() {
+    //   this.unlockRoom()
     // },
-  } //methods end
-  // beforeDestroy() {
-  //   this.unlockRoom()
-  // },
-};
+  };
 </script>
 
 <style scoped>
-@import "../assets/css/bootstrap.min.css";
-@import "../assets/css/reset.css";
-@import "../assets/css/mindex.css";
-@import "../assets/css/mdetail.css";
-@import "../assets/css/mindex_goods.css";
+  @import "../assets/css/bootstrap.min.css";
+  @import "../assets/css/reset.css";
+  @import "../assets/css/mindex.css";
+  @import "../assets/css/mdetail.css";
+  @import "../assets/css/mindex_goods.css";
 
-/* 为了下面的按钮不fixed 解决问题：服务人员被按钮挡住，需要滚动才能显示 */
-.upContentWrap {
-  min-height: calc(100% - 51px);
-}
+  /* 为了下面的按钮不fixed 解决问题：服务人员被按钮挡住，需要滚动才能显示 */
+  .upContentWrap {
+    min-height: calc(100% - 51px);
+  }
 
-.noDataTip {
-  line-height: 50px;
-  text-align: center;
-}
-.whiteBg {
-  background-color: #fff;
-  color: #000;
-}
-.blueBg {
-  background-color: #2ec5c4;
-  color: #fff;
-}
+  .noDataTip {
+    line-height: 50px;
+    text-align: center;
+  }
 
-.warp_main {
-  height: 100vh;
-  overflow-y: auto;
-}
+  .whiteBg {
+    background-color: #fff;
+    color: #000;
+  }
 
-/* 指派服务人员页面 */
-.assignSer-page,
-.changeGood-page {
-  position: fixed;
-  top: 0;
-  bottom: 50px;
-  left: 0;
-  right: 0;
-  background-color: #f1f5f6;
-  z-index: 7;
-}
-.serPerWrap {
-  display: flex;
-  flex-wrap: wrap;
-}
-.serPerItem {
-  flex: 0 0 calc(33.3333% - 10px);
-  display: flex;
-  align-items: center;
-  line-height: 30px;
-  background-color: #fff;
-  margin: 5px;
-  box-shadow: 0 0 2px 0 rgba(214, 214, 214, 0.5);
-  font-weight: normal;
-}
-.serPerItem > input {
-  margin: 0 5px;
-}
+  .blueBg {
+    background-color: #2ec5c4;
+    color: #fff;
+  }
 
-/* 新增的物品item */
-.addGoodTitle {
-  line-height: 30px;
-  text-align: center;
-  background-color: #fff;
-  font-size: 17px;
-}
-.dishes_item {
-  flex: 0 0 calc(50% - 6px);
-}
-.dishes_text,
-.dishes_text {
-  flex: 1 0 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.dishes_text_name,
-.dishes_text_name {
-  margin-bottom: 0;
-}
-.item_text_num,
-.item_text_num {
-  margin-top: 8px;
-}
-.item_text_num .num_add,
-.item_text_num .num_minus,
-.item_text_num .num_add,
-.item_text_num .num_minus {
-  padding: 0 10px;
-  font-size: 18px;
-}
-/* 选中的物品 */
-.select_dishes {
-  position: static;
-  position: static;
-  height: auto;
-}
-.select_dishes_item {
-  float: left;
-  width: calc(33.3333% - 10px);
-  margin: 5px;
-  border: 1px solid #d8d8d8;
-  line-height: 30px;
-  text-align: center;
-}
+  .warp_main {
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  /* 指派服务人员页面 */
+  .assignSer-page,
+  .changeGood-page {
+    position: fixed;
+    top: 0;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    background-color: #f1f5f6;
+    z-index: 7;
+  }
+
+  .serPerWrap {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .serPerItem {
+    flex: 0 0 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+    line-height: 30px;
+    background-color: #fff;
+    margin: 5px;
+    box-shadow: 0 0 2px 0 rgba(214, 214, 214, 0.5);
+    font-weight: normal;
+  }
+
+  .serPerItem>input {
+    margin: 0 5px;
+  }
+
+  /* 新增的物品item */
+  .addGoodTitle {
+    line-height: 30px;
+    text-align: center;
+    background-color: #fff;
+    font-size: 17px;
+  }
+
+  .dishes_item {
+    flex: 0 0 calc(50% - 6px);
+  }
+
+  .dishes_text,
+  .dishes_text {
+    flex: 1 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dishes_text_name,
+  .dishes_text_name {
+    margin-bottom: 0;
+  }
+
+  .item_text_num,
+  .item_text_num {
+    margin-top: 8px;
+  }
+
+  .item_text_num .num_add,
+  .item_text_num .num_minus,
+  .item_text_num .num_add,
+  .item_text_num .num_minus {
+    padding: 0 10px;
+    font-size: 18px;
+  }
+
+  /* 选中的物品 */
+  .select_dishes {
+    position: static;
+    position: static;
+    height: auto;
+  }
+
+  .select_dishes_item {
+    float: left;
+    width: calc(33.3333% - 10px);
+    margin: 5px;
+    border: 1px solid #d8d8d8;
+    line-height: 30px;
+    text-align: center;
+  }
 </style>

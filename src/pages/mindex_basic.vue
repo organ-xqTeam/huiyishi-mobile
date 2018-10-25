@@ -725,6 +725,9 @@
           aopriceArr = null;
           aonumArr = null;
         } else {
+          aonameArr=[]
+          aopriceArr=[]
+          aonumArr=[]
           this.selectedAddedGoodArr.forEach(function (obj) {
             aonameArr.push(obj.agname);
             aopriceArr.push(obj.agprice);
