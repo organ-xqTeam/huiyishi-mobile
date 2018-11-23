@@ -167,11 +167,17 @@
       <!-- otakeorder 服务状态(1.未接单 2.服务中3.服务完成  默认为1 ) -->
       <!-- orderstate;//订单状态(0.以取消 1.未取消  2.已完成   数据库默认未取消为1) -->
       <template v-cloak v-if="queryInfo.fromPage&&queryInfo.fromPage=='service'&&Number(queryInfo.orderstate)!==0">
+        <!-- 待接单 -->
         <button class="blueBg" id="submitTakeOrderBtn" v-cloak v-if="Number(queryInfo.otakeorder)==1" @click="submitTakeOrder">接单</button>
+        <!-- 待对接 -->
         <button class="blueBg" id="submitDockingBtn" v-cloak v-if="Number(queryInfo.otakeorder)==2&&
                       dataArry[0]&&
                       dataArry[0].ocdockingstate==1&&
-                      Number(queryInfo.joinstate)==0" @click="submitDocking">对接</button>
+                      Number(queryInfo.joinstate)==0"
+          @click="submitDocking">对接</button>
+        <!-- 服务中 -->
+        <button class="blueBg" id="submitCompleteBtn" v-cloak v-if="Number(queryInfo.otakeorder)==2" @click="submitComplete">完成</button>
+        <!-- 已完成 -->
         <template v-cloak v-if="Number(queryInfo.otakeorder)==3">
           <button class="whiteBg" @click="openGoodPage">修改物品</button>
           <button class="blueBg" id="submitChangeGood" @click="submitChangeGood">确认</button>
@@ -1119,16 +1125,16 @@
       // },
       //ajax对接
       submitDocking() {
-        let self=this
-        let result=confirm("确认对接完成？")
-        if(!result){
+        let self = this
+        let result = confirm("确认对接完成？")
+        if (!result) {
           return
         }
         let postData = {
           oid: Number(this.oid),
         }
         console.log(postData)
-        $("#submitDockingBtn").removeClass("eventsDisabled");
+        $("#submitDockingBtn").addClass("eventsDisabled");
         this.axios
           .post(
             Global.host + "/order/completeJoin",
@@ -1145,6 +1151,38 @@
           })
           .catch(function (res) {
             $("#submitDockingBtn").removeClass("eventsDisabled");
+            console.log(res);
+          });
+      },
+      //ajax完成订单
+      submitComplete() {
+        let self=this
+        let result = confirm("确认完成该订单？")
+        if (!result) {
+          return
+        }
+        let postData = {
+          oid: Number(this.oid),
+          otakeorder:3,
+        }
+        console.log(postData)
+        $("#submitCompleteBtn").addClass("eventsDisabled");
+        this.axios
+          .post(
+            Global.host + "/order/updateServiceComplete",
+            this.qs.stringify(postData)
+          )
+          .then(function (res) {
+            $("#submitCompleteBtn").removeClass("eventsDisabled");
+            console.log(res);
+            if (res.data && Number(res.data) == 1) {
+              alert("操作成功");
+
+              self.$router.go(-1);
+            }
+          })
+          .catch(function (res) {
+            $("#submitCompleteBtn").removeClass("eventsDisabled");
             console.log(res);
           });
       },
